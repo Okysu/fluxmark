@@ -138,6 +138,9 @@ export class FluxInlineParser {
 
   public parse(input: string): FluxInlineToken[] {
     if (input.length === 0) return [];
+    if (!/[\[\]*_=~`\n!]/.test(input)) {
+      return [createFluxInlineToken('text', input)];
+    }
 
     const codePairs = this.findCodePairs(input);
     const { bracketPairs, pipePositions } = this.findBracketPairs(input, codePairs);
@@ -167,6 +170,27 @@ export class FluxInlineParser {
     };
 
     while (index < input.length) {
+      if (input[index] === '!' && input[index + 1] === '[') {
+        const imageEnd = bracketPairs.get(index + 1);
+        if (imageEnd !== undefined) {
+          const imagePipe = pipePositions.get(index + 1);
+          const sourceEnd = imagePipe ?? imageEnd;
+          const src = input.slice(index + 2, sourceEnd).trim();
+          const alt = imagePipe === undefined
+            ? ''
+            : input.slice(imagePipe + 1, imageEnd).trim();
+          if (src.length > 0) {
+            flushText(index);
+            tokens.push(
+              createFluxInlineToken('image', alt, currentStyle(), { src }),
+            );
+            index = imageEnd + 1;
+            textStart = index;
+            continue;
+          }
+        }
+      }
+
       const codeEnd = codePairs.get(index);
       if (codeEnd !== undefined) {
         flushText(index);

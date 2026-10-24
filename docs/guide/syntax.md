@@ -234,7 +234,18 @@ A modifier starting with `?` sets a tooltip. The tooltip modifier absorbs all re
 [Docs|https://example.com/docs,?Open the documentation]
 ```
 
-Content inside a pipe expression is raw text and is not recursively parsed as another set of inline tokens. FluxMark does not use Markdown `[label](url)` links, raw HTML, or image syntax.
+Content inside a pipe expression is raw text and is not recursively parsed as another set of inline tokens. FluxMark does not use Markdown `[label](url)` links or raw HTML.
+
+### Images
+
+Images reuse the same bracket grammar, with the source first and an optional alternative description after the pipe:
+
+```text live
+![https://okysu.github.io/fluxmark/logo.svg|FluxMark logo]
+![https://okysu.github.io/fluxmark/logo.svg]
+```
+
+`![src]` is a valid decorative image with empty `alt`; `![src|alt]` adds an accessible description. The HTML renderer validates the source against the same URL policy, escapes the alternative text, and emits `loading="lazy" decoding="async"`. Invalid sources render as escaped fallback text instead of an image element. Markdown's `![alt](url)` syntax is not accepted.
 
 ## Diagnostics and source locations
 

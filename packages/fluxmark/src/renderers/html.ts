@@ -127,6 +127,16 @@ export class FluxHtmlRenderer {
 
   private renderTokenDefault(token: FluxInlineToken): string {
     if (token.type === 'break') return '<br />';
+    if (token.type === 'image') {
+      const src = safeFluxUrl(token.attributes.src ?? '');
+      if (src === null) {
+        const fallback = token.content.length > 0
+          ? token.content
+          : token.attributes.src ?? '';
+        return `<span class="${this.prefix}-image-fallback">${escapeHtml(fallback)}</span>`;
+      }
+      return `<img class="${this.prefix}-image" src="${escapeAttribute(src)}" alt="${escapeAttribute(token.content)}" loading="lazy" decoding="async" />`;
+    }
     let html = escapeHtml(token.content);
     const { style } = token;
     const custom = style.customModifiers.length === 0

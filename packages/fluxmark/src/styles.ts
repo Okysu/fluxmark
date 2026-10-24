@@ -52,6 +52,8 @@ const FLUX_DEFAULT_STYLES = `
   font-size: 0.88em;
 }
 .fx-kbd { box-shadow: 0 2px 0 var(--fx-border); white-space: nowrap; }
+.fx-image { display: block; width: auto; max-width: 100%; height: auto; margin: 1rem auto; border: 1px solid var(--fx-border); border-radius: 0.55rem; }
+.fx-image-fallback { color: var(--fx-muted); font-style: italic; }
 .fx-badge { display: inline-flex; align-items: center; padding: 0.08em 0.55em; border-radius: 999px; background: color-mix(in srgb, var(--fx-accent) 13%, transparent); color: var(--fx-accent); font-size: 0.78em; font-weight: 700; letter-spacing: 0.02em; }
 .fx-spoiler { border-radius: 0.25rem; background: var(--fx-fg); color: transparent; cursor: pointer; transition: color 150ms, background 150ms; }
 .fx-spoiler:hover, .fx-spoiler:focus { background: color-mix(in srgb, var(--fx-fg) 8%, transparent); color: var(--fx-fg); }

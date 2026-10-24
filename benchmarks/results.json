@@ -1,0 +1,1350 @@
+{
+  "generatedAt": "2026-10-24T02:55:02.121Z",
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux 7.0.0-38-generic",
+    "cpu": "Intel(R) Core(TM) i7-14700KF",
+    "samples": 11,
+    "targetSampleMilliseconds": 150,
+    "gcExposed": true
+  },
+  "sources": [
+    {
+      "id": "vue-core-readme",
+      "group": "rich",
+      "source": "vuejs/core/README.md@0ff253bf",
+      "license": "MIT",
+      "originalBytes": 2741,
+      "words": 198,
+      "images": 3,
+      "omitted": {
+        "tables": 0,
+        "images": 3,
+        "htmlBlocks": 3,
+        "inlineHtml": 5,
+        "relativeLinks": 0,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 2052,
+      "fluxCharacters": 1996,
+      "characterDelta": -56,
+      "characterDeltaPercent": -2.73,
+      "markdownNonWhitespace": 1829,
+      "fluxNonWhitespace": 1773,
+      "nonWhitespaceDeltaPercent": -3.06
+    },
+    {
+      "id": "vite-readme",
+      "group": "rich",
+      "source": "vitejs/vite/README.md@82e7aa03",
+      "license": "MIT",
+      "originalBytes": 3416,
+      "words": 135,
+      "images": 3,
+      "omitted": {
+        "tables": 1,
+        "images": 3,
+        "htmlBlocks": 2,
+        "inlineHtml": 0,
+        "relativeLinks": 8,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 1616,
+      "fluxCharacters": 1641,
+      "characterDelta": 25,
+      "characterDeltaPercent": 1.55,
+      "markdownNonWhitespace": 1427,
+      "fluxNonWhitespace": 1453,
+      "nonWhitespaceDeltaPercent": 1.82
+    },
+    {
+      "id": "svelte-readme",
+      "group": "rich",
+      "source": "sveltejs/svelte/README.md@356c8766",
+      "license": "MIT",
+      "originalBytes": 1730,
+      "words": 176,
+      "images": 2,
+      "omitted": {
+        "tables": 0,
+        "images": 2,
+        "htmlBlocks": 1,
+        "inlineHtml": 0,
+        "relativeLinks": 4,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 1428,
+      "fluxCharacters": 1407,
+      "characterDelta": -21,
+      "characterDeltaPercent": -1.47,
+      "markdownNonWhitespace": 1234,
+      "fluxNonWhitespace": 1213,
+      "nonWhitespaceDeltaPercent": -1.7
+    },
+    {
+      "id": "nuxt-readme",
+      "group": "rich",
+      "source": "nuxt/nuxt/README.md@2a81d4a6",
+      "license": "MIT",
+      "originalBytes": 5702,
+      "words": 418,
+      "images": 0,
+      "omitted": {
+        "tables": 0,
+        "images": 0,
+        "htmlBlocks": 2,
+        "inlineHtml": 21,
+        "relativeLinks": 9,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 3360,
+      "fluxCharacters": 3310,
+      "characterDelta": -50,
+      "characterDeltaPercent": -1.49,
+      "markdownNonWhitespace": 2855,
+      "fluxNonWhitespace": 2799,
+      "nonWhitespaceDeltaPercent": -1.96
+    },
+    {
+      "id": "astro-readme",
+      "group": "rich",
+      "source": "withastro/astro/README.md@5fe699c8",
+      "license": "MIT",
+      "originalBytes": 8349,
+      "words": 159,
+      "images": 25,
+      "omitted": {
+        "tables": 2,
+        "images": 25,
+        "htmlBlocks": 4,
+        "inlineHtml": 0,
+        "relativeLinks": 42,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 4434,
+      "fluxCharacters": 4701,
+      "characterDelta": 267,
+      "characterDeltaPercent": 6.02,
+      "markdownNonWhitespace": 4085,
+      "fluxNonWhitespace": 4327,
+      "nonWhitespaceDeltaPercent": 5.92
+    },
+    {
+      "id": "storybook-readme",
+      "group": "rich",
+      "source": "storybookjs/storybook/README.md@9b4e295a",
+      "license": "MIT",
+      "originalBytes": 21923,
+      "words": 518,
+      "images": 26,
+      "omitted": {
+        "tables": 2,
+        "images": 26,
+        "htmlBlocks": 9,
+        "inlineHtml": 81,
+        "relativeLinks": 43,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 8545,
+      "fluxCharacters": 8811,
+      "characterDelta": 266,
+      "characterDeltaPercent": 3.11,
+      "markdownNonWhitespace": 7616,
+      "fluxNonWhitespace": 7848,
+      "nonWhitespaceDeltaPercent": 3.05
+    },
+    {
+      "id": "deno-readme",
+      "group": "rich",
+      "source": "denoland/deno/README.md@d7205acb",
+      "license": "MIT",
+      "originalBytes": 3807,
+      "words": 278,
+      "images": 5,
+      "omitted": {
+        "tables": 0,
+        "images": 5,
+        "htmlBlocks": 1,
+        "inlineHtml": 0,
+        "relativeLinks": 1,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 3103,
+      "fluxCharacters": 2996,
+      "characterDelta": -107,
+      "characterDeltaPercent": -3.45,
+      "markdownNonWhitespace": 2783,
+      "fluxNonWhitespace": 2666,
+      "nonWhitespaceDeltaPercent": -4.2
+    },
+    {
+      "id": "react-readme",
+      "group": "rich",
+      "source": "facebook/react/README.md@a6b912fb",
+      "license": "MIT",
+      "originalBytes": 5296,
+      "words": 538,
+      "images": 5,
+      "omitted": {
+        "tables": 0,
+        "images": 5,
+        "htmlBlocks": 0,
+        "inlineHtml": 0,
+        "relativeLinks": 1,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 4969,
+      "fluxCharacters": 4859,
+      "characterDelta": -110,
+      "characterDeltaPercent": -2.21,
+      "markdownNonWhitespace": 4379,
+      "fluxNonWhitespace": 4264,
+      "nonWhitespaceDeltaPercent": -2.63
+    },
+    {
+      "id": "typescript-readme",
+      "group": "rich",
+      "source": "microsoft/TypeScript/README.md@8d9b6da9",
+      "license": "Apache-2.0",
+      "originalBytes": 2741,
+      "words": 199,
+      "images": 4,
+      "omitted": {
+        "tables": 0,
+        "images": 4,
+        "htmlBlocks": 0,
+        "inlineHtml": 0,
+        "relativeLinks": 2,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 2457,
+      "fluxCharacters": 2386,
+      "characterDelta": -71,
+      "characterDeltaPercent": -2.89,
+      "markdownNonWhitespace": 2232,
+      "fluxNonWhitespace": 2159,
+      "nonWhitespaceDeltaPercent": -3.27
+    },
+    {
+      "id": "vue-introduction",
+      "group": "prose",
+      "source": "vuejs/docs/src/guide/introduction.md@40aa88af",
+      "license": "MIT",
+      "originalBytes": 11950,
+      "words": 1133,
+      "images": 0,
+      "omitted": {
+        "tables": 0,
+        "images": 0,
+        "htmlBlocks": 10,
+        "inlineHtml": 0,
+        "relativeLinks": 4,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 8362,
+      "fluxCharacters": 8313,
+      "characterDelta": -49,
+      "characterDeltaPercent": -0.59,
+      "markdownNonWhitespace": 7101,
+      "fluxNonWhitespace": 7028,
+      "nonWhitespaceDeltaPercent": -1.03
+    },
+    {
+      "id": "vue-faq",
+      "group": "prose",
+      "source": "vuejs/docs/src/about/faq.md@40aa88af",
+      "license": "MIT",
+      "originalBytes": 9874,
+      "words": 1369,
+      "images": 0,
+      "omitted": {
+        "tables": 0,
+        "images": 0,
+        "htmlBlocks": 0,
+        "inlineHtml": 0,
+        "relativeLinks": 11,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 9475,
+      "fluxCharacters": 9423,
+      "characterDelta": -52,
+      "characterDeltaPercent": -0.55,
+      "markdownNonWhitespace": 8057,
+      "fluxNonWhitespace": 8005,
+      "nonWhitespaceDeltaPercent": -0.65
+    },
+    {
+      "id": "vue-community",
+      "group": "prose",
+      "source": "vuejs/docs/src/about/community-guide.md@40aa88af",
+      "license": "MIT",
+      "originalBytes": 6029,
+      "words": 858,
+      "images": 0,
+      "omitted": {
+        "tables": 0,
+        "images": 0,
+        "htmlBlocks": 0,
+        "inlineHtml": 0,
+        "relativeLinks": 3,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 6000,
+      "fluxCharacters": 5936,
+      "characterDelta": -64,
+      "characterDeltaPercent": -1.07,
+      "markdownNonWhitespace": 5094,
+      "fluxNonWhitespace": 5030,
+      "nonWhitespaceDeltaPercent": -1.26
+    },
+    {
+      "id": "vite-troubleshooting",
+      "group": "prose",
+      "source": "vitejs/vite/docs/guide/troubleshooting.md@82e7aa03",
+      "license": "MIT",
+      "originalBytes": 16428,
+      "words": 2140,
+      "images": 0,
+      "omitted": {
+        "tables": 0,
+        "images": 0,
+        "htmlBlocks": 0,
+        "inlineHtml": 0,
+        "relativeLinks": 9,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 15792,
+      "fluxCharacters": 15621,
+      "characterDelta": -171,
+      "characterDeltaPercent": -1.08,
+      "markdownNonWhitespace": 13412,
+      "fluxNonWhitespace": 13262,
+      "nonWhitespaceDeltaPercent": -1.12
+    },
+    {
+      "id": "node-contributing",
+      "group": "prose",
+      "source": "nodejs/node/doc/contributing/pull-requests.md@b12bad4b",
+      "license": "MIT",
+      "originalBytes": 27384,
+      "words": 3943,
+      "images": 0,
+      "omitted": {
+        "tables": 0,
+        "images": 0,
+        "htmlBlocks": 0,
+        "inlineHtml": 0,
+        "relativeLinks": 48,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 25456,
+      "fluxCharacters": 25324,
+      "characterDelta": -132,
+      "characterDeltaPercent": -0.52,
+      "markdownNonWhitespace": 21198,
+      "fluxNonWhitespace": 21076,
+      "nonWhitespaceDeltaPercent": -0.58
+    },
+    {
+      "id": "rust-installation",
+      "group": "prose",
+      "source": "rust-lang/book/src/ch01-01-installation.md@1500248d",
+      "license": "MIT OR Apache-2.0",
+      "originalBytes": 6660,
+      "words": 916,
+      "images": 0,
+      "omitted": {
+        "tables": 0,
+        "images": 0,
+        "htmlBlocks": 0,
+        "inlineHtml": 4,
+        "relativeLinks": 0,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 6033,
+      "fluxCharacters": 5971,
+      "characterDelta": -62,
+      "characterDeltaPercent": -1.03,
+      "markdownNonWhitespace": 5045,
+      "fluxNonWhitespace": 4971,
+      "nonWhitespaceDeltaPercent": -1.47
+    },
+    {
+      "id": "rust-rfc-nll",
+      "group": "spec",
+      "source": "rust-lang/rfcs/text/2094-nll.md@f63a7efb",
+      "license": "MIT OR Apache-2.0",
+      "originalBytes": 83823,
+      "words": 13369,
+      "images": 0,
+      "omitted": {
+        "tables": 0,
+        "images": 0,
+        "htmlBlocks": 0,
+        "inlineHtml": 2,
+        "relativeLinks": 1,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 83244,
+      "fluxCharacters": 83129,
+      "characterDelta": -115,
+      "characterDeltaPercent": -0.14,
+      "markdownNonWhitespace": 66082,
+      "fluxNonWhitespace": 65421,
+      "nonWhitespaceDeltaPercent": -1
+    },
+    {
+      "id": "react-rfc-server-components",
+      "group": "spec",
+      "source": "reactjs/rfcs/text/0188-server-components.md@c15bc9df",
+      "license": "MIT",
+      "originalBytes": 50596,
+      "words": 7390,
+      "images": 0,
+      "omitted": {
+        "tables": 0,
+        "images": 0,
+        "htmlBlocks": 0,
+        "inlineHtml": 0,
+        "relativeLinks": 35,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 49225,
+      "fluxCharacters": 49089,
+      "characterDelta": -136,
+      "characterDeltaPercent": -0.28,
+      "markdownNonWhitespace": 41149,
+      "fluxNonWhitespace": 40937,
+      "nonWhitespaceDeltaPercent": -0.52
+    },
+    {
+      "id": "kubernetes-kep-in-place-resize",
+      "group": "spec",
+      "source": "kubernetes/enhancements/keps/sig-node/1287-in-place-update-pod-resources/README.md@0c8d11e9",
+      "license": "Apache-2.0",
+      "originalBytes": 94808,
+      "words": 11608,
+      "images": 0,
+      "omitted": {
+        "tables": 0,
+        "images": 0,
+        "htmlBlocks": 0,
+        "inlineHtml": 12,
+        "relativeLinks": 107,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 88271,
+      "fluxCharacters": 87780,
+      "characterDelta": -491,
+      "characterDeltaPercent": -0.56,
+      "markdownNonWhitespace": 73220,
+      "fluxNonWhitespace": 73080,
+      "nonWhitespaceDeltaPercent": -0.19
+    },
+    {
+      "id": "node-api-fs",
+      "group": "reference",
+      "source": "nodejs/node/doc/api/fs.md@b12bad4b",
+      "license": "MIT",
+      "originalBytes": 317876,
+      "words": 28864,
+      "images": 0,
+      "omitted": {
+        "tables": 4,
+        "images": 0,
+        "htmlBlocks": 5,
+        "inlineHtml": 0,
+        "relativeLinks": 158,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 217275,
+      "fluxCharacters": 216864,
+      "characterDelta": -411,
+      "characterDeltaPercent": -0.19,
+      "markdownNonWhitespace": 182962,
+      "fluxNonWhitespace": 181965,
+      "nonWhitespaceDeltaPercent": -0.54
+    },
+    {
+      "id": "node-api-errors",
+      "group": "reference",
+      "source": "nodejs/node/doc/api/errors.md@b12bad4b",
+      "license": "MIT",
+      "originalBytes": 128533,
+      "words": 12342,
+      "images": 0,
+      "omitted": {
+        "tables": 0,
+        "images": 0,
+        "htmlBlocks": 0,
+        "inlineHtml": 948,
+        "relativeLinks": 150,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 95268,
+      "fluxCharacters": 95167,
+      "characterDelta": -101,
+      "characterDeltaPercent": -0.11,
+      "markdownNonWhitespace": 80899,
+      "fluxNonWhitespace": 80705,
+      "nonWhitespaceDeltaPercent": -0.24
+    },
+    {
+      "id": "node-api-stream",
+      "group": "reference",
+      "source": "nodejs/node/doc/api/stream.md@b12bad4b",
+      "license": "MIT",
+      "originalBytes": 160003,
+      "words": 17847,
+      "images": 0,
+      "omitted": {
+        "tables": 1,
+        "images": 0,
+        "htmlBlocks": 0,
+        "inlineHtml": 0,
+        "relativeLinks": 298,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 133056,
+      "fluxCharacters": 133608,
+      "characterDelta": 552,
+      "characterDeltaPercent": 0.41,
+      "markdownNonWhitespace": 111144,
+      "fluxNonWhitespace": 110592,
+      "nonWhitespaceDeltaPercent": -0.5
+    },
+    {
+      "id": "node-api-http",
+      "group": "reference",
+      "source": "nodejs/node/doc/api/http.md@b12bad4b",
+      "license": "MIT",
+      "originalBytes": 151286,
+      "words": 16491,
+      "images": 0,
+      "omitted": {
+        "tables": 0,
+        "images": 0,
+        "htmlBlocks": 0,
+        "inlineHtml": 0,
+        "relativeLinks": 196,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 125191,
+      "fluxCharacters": 125276,
+      "characterDelta": 85,
+      "characterDeltaPercent": 0.07,
+      "markdownNonWhitespace": 105547,
+      "fluxNonWhitespace": 104891,
+      "nonWhitespaceDeltaPercent": -0.62
+    },
+    {
+      "id": "node-api-path",
+      "group": "reference",
+      "source": "nodejs/node/doc/api/path.md@b12bad4b",
+      "license": "MIT",
+      "originalBytes": 17008,
+      "words": 1773,
+      "images": 0,
+      "omitted": {
+        "tables": 0,
+        "images": 0,
+        "htmlBlocks": 0,
+        "inlineHtml": 0,
+        "relativeLinks": 17,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 14437,
+      "fluxCharacters": 14416,
+      "characterDelta": -21,
+      "characterDeltaPercent": -0.15,
+      "markdownNonWhitespace": 12209,
+      "fluxNonWhitespace": 12052,
+      "nonWhitespaceDeltaPercent": -1.29
+    },
+    {
+      "id": "node-api-buffer",
+      "group": "reference",
+      "source": "nodejs/node/doc/api/buffer.md@b12bad4b",
+      "license": "MIT",
+      "originalBytes": 164257,
+      "words": 17189,
+      "images": 0,
+      "omitted": {
+        "tables": 0,
+        "images": 0,
+        "htmlBlocks": 0,
+        "inlineHtml": 4,
+        "relativeLinks": 120,
+        "inlineCodeWithBacktick": 0
+      },
+      "markdownCharacters": 130266,
+      "fluxCharacters": 130508,
+      "characterDelta": 242,
+      "characterDeltaPercent": 0.19,
+      "markdownNonWhitespace": 110932,
+      "fluxNonWhitespace": 109600,
+      "nonWhitespaceDeltaPercent": -1.2
+    }
+  ],
+  "groups": {
+    "rich": {
+      "label": "Link/media-rich public READMEs",
+      "documents": 9,
+      "words": 2619,
+      "images": 73,
+      "tables": 5,
+      "markdownBytes": 32313,
+      "fluxBytes": 32456,
+      "markdownCharacters": 31980,
+      "fluxCharacters": 32123,
+      "characterDelta": 143,
+      "characterDeltaPercent": 0.45,
+      "markdownNonWhitespace": 28440,
+      "fluxNonWhitespace": 28502,
+      "nonWhitespaceDeltaPercent": 0.22,
+      "engines": {
+        "FluxMark": {
+          "parse": {
+            "iterations": 167,
+            "medianMs": 0.6844004790419157,
+            "p95Ms": 0.8132209101796408,
+            "minMs": 0.6628040119760485,
+            "samples": [
+              0.8132,
+              0.6758,
+              0.695,
+              0.7228,
+              0.6635,
+              0.6844,
+              0.6674,
+              0.6666,
+              0.6934,
+              0.6929,
+              0.6628
+            ]
+          },
+          "render": {
+            "iterations": 159,
+            "medianMs": 0.8675052955974859,
+            "p95Ms": 0.915688333333333,
+            "minMs": 0.8476869999999994,
+            "samples": [
+              0.8765,
+              0.9157,
+              0.8569,
+              0.8657,
+              0.8747,
+              0.8675,
+              0.8547,
+              0.8776,
+              0.8514,
+              0.8477,
+              0.8683
+            ]
+          },
+          "renderMbPerSecond": 35.67984399675975,
+          "parseMbPerSecond": 45.22564574561846,
+          "renderRelativeToFlux": 1
+        },
+        "markdown-it": {
+          "parse": {
+            "iterations": 52,
+            "medianMs": 2.038607019230767,
+            "p95Ms": 2.1545738461538453,
+            "minMs": 1.9806639615384607,
+            "samples": [
+              2.1546,
+              1.9807,
+              2,
+              2.082,
+              2.0422,
+              1.9824,
+              2.0297,
+              2.0507,
+              2.0523,
+              2.0362,
+              2.0386
+            ]
+          },
+          "render": {
+            "iterations": 85,
+            "medianMs": 1.99222811764706,
+            "p95Ms": 2.0411794705882342,
+            "minMs": 1.836817541176467,
+            "samples": [
+              2.0412,
+              1.9735,
+              1.9922,
+              2.016,
+              2.0064,
+              1.8368,
+              2.0038,
+              1.9718,
+              2.0368,
+              1.9664,
+              1.913
+            ]
+          },
+          "renderMbPerSecond": 15.468147403938248,
+          "parseMbPerSecond": 15.11624255942328,
+          "renderRelativeToFlux": 2.296502543278346
+        },
+        "marked": {
+          "parse": {
+            "iterations": 99,
+            "medianMs": 1.153266707070699,
+            "p95Ms": 1.2407686262626285,
+            "minMs": 1.1435765757575767,
+            "samples": [
+              1.2408,
+              1.1913,
+              1.1578,
+              1.152,
+              1.1534,
+              1.1472,
+              1.1436,
+              1.1459,
+              1.1443,
+              1.1848,
+              1.1533
+            ]
+          },
+          "render": {
+            "iterations": 111,
+            "medianMs": 1.3351660180180245,
+            "p95Ms": 1.4158672522522415,
+            "minMs": 1.3191389459459413,
+            "samples": [
+              1.3191,
+              1.3371,
+              1.3302,
+              1.3588,
+              1.3292,
+              1.3352,
+              1.4159,
+              1.3747,
+              1.3738,
+              1.3302,
+              1.3214
+            ]
+          },
+          "renderMbPerSecond": 23.08033440798607,
+          "parseMbPerSecond": 26.72068654813429,
+          "renderRelativeToFlux": 1.5390868791163306
+        }
+      }
+    },
+    "spec": {
+      "label": "Authoritative technical specifications",
+      "documents": 3,
+      "words": 32367,
+      "images": 0,
+      "tables": 0,
+      "markdownBytes": 222662,
+      "fluxBytes": 221920,
+      "markdownCharacters": 220744,
+      "fluxCharacters": 220002,
+      "characterDelta": -742,
+      "characterDeltaPercent": -0.34,
+      "markdownNonWhitespace": 180451,
+      "fluxNonWhitespace": 179438,
+      "nonWhitespaceDeltaPercent": -0.56,
+      "engines": {
+        "FluxMark": {
+          "parse": {
+            "iterations": 38,
+            "medianMs": 4.232749842105285,
+            "p95Ms": 4.344770605263157,
+            "minMs": 4.195995973684196,
+            "samples": [
+              4.2202,
+              4.196,
+              4.3448,
+              4.2327,
+              4.2023,
+              4.293,
+              4.2827,
+              4.2343,
+              4.2963,
+              4.2115,
+              4.2245
+            ]
+          },
+          "render": {
+            "iterations": 16,
+            "medianMs": 5.022281812499955,
+            "p95Ms": 5.307223874999977,
+            "minMs": 4.95153543750007,
+            "samples": [
+              5.1519,
+              5.0241,
+              5.0223,
+              5.3072,
+              5.02,
+              4.9733,
+              5.1801,
+              4.9515,
+              4.9562,
+              5.1643,
+              5.0004
+            ]
+          },
+          "renderMbPerSecond": 42.14008934546958,
+          "parseMbPerSecond": 50.00045176107308,
+          "renderRelativeToFlux": 1
+        },
+        "markdown-it": {
+          "parse": {
+            "iterations": 22,
+            "medianMs": 6.468985136363616,
+            "p95Ms": 6.623747090909092,
+            "minMs": 6.2470934545454755,
+            "samples": [
+              6.469,
+              6.6237,
+              6.2471,
+              6.5338,
+              6.3595,
+              6.4221,
+              6.5299,
+              6.4976,
+              6.2726,
+              6.4602,
+              6.5478
+            ]
+          },
+          "render": {
+            "iterations": 22,
+            "medianMs": 6.92253522727275,
+            "p95Ms": 7.156490545454537,
+            "minMs": 6.093812499999992,
+            "samples": [
+              6.0938,
+              6.9462,
+              6.8663,
+              6.9263,
+              7.1121,
+              7.1565,
+              6.8293,
+              6.9225,
+              6.9045,
+              6.7426,
+              6.9402
+            ]
+          },
+          "renderMbPerSecond": 30.674749014358742,
+          "parseMbPerSecond": 32.82540091891666,
+          "renderRelativeToFlux": 1.3783645533476945
+        },
+        "marked": {
+          "parse": {
+            "iterations": 22,
+            "medianMs": 6.6325744545453995,
+            "p95Ms": 6.729260999999993,
+            "minMs": 6.547582454545508,
+            "samples": [
+              6.7293,
+              6.5602,
+              6.6624,
+              6.6218,
+              6.6233,
+              6.6569,
+              6.6264,
+              6.6467,
+              6.5476,
+              6.6326,
+              6.6358
+            ]
+          },
+          "render": {
+            "iterations": 21,
+            "medianMs": 7.330508952380894,
+            "p95Ms": 7.432317238095233,
+            "minMs": 7.260089714285728,
+            "samples": [
+              7.364,
+              7.2601,
+              7.3629,
+              7.4221,
+              7.4323,
+              7.2893,
+              7.3101,
+              7.3128,
+              7.3932,
+              7.3217,
+              7.3305
+            ]
+          },
+          "renderMbPerSecond": 28.967569921687325,
+          "parseMbPerSecond": 32.01577789965463,
+          "renderRelativeToFlux": 1.4595972958219894
+        }
+      }
+    },
+    "prose": {
+      "label": "Prose-heavy documentation chapters",
+      "documents": 6,
+      "words": 10359,
+      "images": 0,
+      "tables": 0,
+      "markdownBytes": 71708,
+      "fluxBytes": 71178,
+      "markdownCharacters": 71128,
+      "fluxCharacters": 70598,
+      "characterDelta": -530,
+      "characterDeltaPercent": -0.75,
+      "markdownNonWhitespace": 59907,
+      "fluxNonWhitespace": 59372,
+      "nonWhitespaceDeltaPercent": -0.89,
+      "engines": {
+        "FluxMark": {
+          "parse": {
+            "iterations": 99,
+            "medianMs": 1.2988206060606053,
+            "p95Ms": 1.3351596868687001,
+            "minMs": 1.286852686868687,
+            "samples": [
+              1.3001,
+              1.2988,
+              1.2983,
+              1.3352,
+              1.2941,
+              1.3018,
+              1.3262,
+              1.2895,
+              1.2925,
+              1.3342,
+              1.2869
+            ]
+          },
+          "render": {
+            "iterations": 99,
+            "medianMs": 1.5413226868686896,
+            "p95Ms": 1.5784684242424174,
+            "minMs": 1.5195641111111198,
+            "samples": [
+              1.532,
+              1.5633,
+              1.5264,
+              1.5196,
+              1.5785,
+              1.5348,
+              1.5413,
+              1.5666,
+              1.521,
+              1.5614,
+              1.5754
+            ]
+          },
+          "renderMbPerSecond": 44.040505645880394,
+          "parseMbPerSecond": 52.26328422602546,
+          "renderRelativeToFlux": 1
+        },
+        "markdown-it": {
+          "parse": {
+            "iterations": 52,
+            "medianMs": 2.1687862115385053,
+            "p95Ms": 2.2654498846154287,
+            "minMs": 1.910945788461504,
+            "samples": [
+              2.2638,
+              2.2654,
+              2.1947,
+              2.1688,
+              2.2085,
+              2.1516,
+              2.182,
+              2.0854,
+              2.1675,
+              1.9109,
+              2.1284
+            ]
+          },
+          "render": {
+            "iterations": 66,
+            "medianMs": 2.1069689090908827,
+            "p95Ms": 2.262874909090952,
+            "minMs": 1.9889124696969565,
+            "samples": [
+              1.9889,
+              2.2356,
+              2.2629,
+              2.0017,
+              2.2234,
+              2.107,
+              2.1068,
+              2.0679,
+              2.1874,
+              2.0117,
+              2.2191
+            ]
+          },
+          "renderMbPerSecond": 32.457089226991336,
+          "parseMbPerSecond": 31.53195899025349,
+          "renderRelativeToFlux": 1.3669875406631073
+        },
+        "marked": {
+          "parse": {
+            "iterations": 75,
+            "medianMs": 1.9415307066666234,
+            "p95Ms": 1.9606685866666764,
+            "minMs": 1.918969960000007,
+            "samples": [
+              1.9607,
+              1.9285,
+              1.9265,
+              1.9202,
+              1.919,
+              1.9451,
+              1.9427,
+              1.9421,
+              1.945,
+              1.9415,
+              1.9373
+            ]
+          },
+          "render": {
+            "iterations": 67,
+            "medianMs": 2.1470667761193964,
+            "p95Ms": 2.186193686567189,
+            "minMs": 2.129359358208929,
+            "samples": [
+              2.1515,
+              2.1862,
+              2.1404,
+              2.1517,
+              2.1355,
+              2.1294,
+              2.1317,
+              2.1324,
+              2.1471,
+              2.1539,
+              2.1479
+            ]
+          },
+          "renderMbPerSecond": 31.85093199777429,
+          "parseMbPerSecond": 35.22276400061172,
+          "renderRelativeToFlux": 1.3930027724962126
+        },
+        "snarkdown": {
+          "parse": null,
+          "render": {
+            "iterations": 83,
+            "medianMs": 1.9054324096385638,
+            "p95Ms": 1.9267367469879704,
+            "minMs": 1.8931042289156492,
+            "samples": [
+              1.9267,
+              1.9034,
+              1.9176,
+              1.9017,
+              1.9192,
+              1.9054,
+              1.905,
+              1.9062,
+              1.8931,
+              1.9051,
+              1.9237
+            ]
+          },
+          "renderMbPerSecond": 35.89005704685759,
+          "renderRelativeToFlux": 1.2362319881955348
+        }
+      }
+    },
+    "reference": {
+      "label": "Large API and reference documents",
+      "documents": 6,
+      "words": 94506,
+      "images": 0,
+      "tables": 5,
+      "markdownBytes": 719283,
+      "fluxBytes": 719635,
+      "markdownCharacters": 715503,
+      "fluxCharacters": 715849,
+      "characterDelta": 346,
+      "characterDeltaPercent": 0.05,
+      "markdownNonWhitespace": 603693,
+      "fluxNonWhitespace": 599805,
+      "nonWhitespaceDeltaPercent": -0.64,
+      "engines": {
+        "FluxMark": {
+          "parse": {
+            "iterations": 10,
+            "medianMs": 17.76262850000021,
+            "p95Ms": 18.10291700000016,
+            "minMs": 17.538191500000174,
+            "samples": [
+              18.0062,
+              17.6604,
+              18.0877,
+              17.5382,
+              17.6613,
+              18.0618,
+              17.8506,
+              17.7626,
+              18.1029,
+              17.6545,
+              17.6568
+            ]
+          },
+          "render": {
+            "iterations": 6,
+            "medianMs": 22.92623683333295,
+            "p95Ms": 24.08911216666699,
+            "minMs": 22.268358833333576,
+            "samples": [
+              23.2107,
+              22.2684,
+              22.8852,
+              23.4811,
+              22.9262,
+              22.5988,
+              23.4006,
+              22.9258,
+              24.0891,
+              23.9073,
+              22.4971
+            ]
+          },
+          "renderMbPerSecond": 29.935022554124064,
+          "parseMbPerSecond": 38.63715421887046,
+          "renderRelativeToFlux": 1
+        },
+        "markdown-it": {
+          "parse": {
+            "iterations": 6,
+            "medianMs": 29.78440516666645,
+            "p95Ms": 30.893443000000843,
+            "minMs": 28.109394499999325,
+            "samples": [
+              28.2719,
+              30.8934,
+              30.1459,
+              29.7844,
+              30.7117,
+              28.7269,
+              30.0159,
+              29.9892,
+              29.4997,
+              28.1094,
+              29.4368
+            ]
+          },
+          "render": {
+            "iterations": 7,
+            "medianMs": 31.317448999999865,
+            "p95Ms": 32.792219285714964,
+            "minMs": 30.591470285713772,
+            "samples": [
+              30.7074,
+              31.3174,
+              31.6128,
+              30.9497,
+              31.1884,
+              30.5915,
+              31.2852,
+              31.7815,
+              31.4709,
+              32.7922,
+              32.1232
+            ]
+          },
+          "renderMbPerSecond": 21.903499334433008,
+          "parseMbPerSecond": 23.030902228503745,
+          "renderRelativeToFlux": 1.3660091373769092
+        },
+        "marked": {
+          "parse": {
+            "iterations": 6,
+            "medianMs": 26.933096999999787,
+            "p95Ms": 29.27078866666731,
+            "minMs": 26.703784333333413,
+            "samples": [
+              28.1735,
+              26.7628,
+              26.8695,
+              27.0117,
+              26.7038,
+              29.2708,
+              26.7263,
+              26.9331,
+              26.7501,
+              27.0065,
+              27.0725
+            ]
+          },
+          "render": {
+            "iterations": 6,
+            "medianMs": 30.194535500000104,
+            "p95Ms": 30.38255116666672,
+            "minMs": 30.0663288333332,
+            "samples": [
+              30.1945,
+              30.0663,
+              30.238,
+              30.093,
+              30.3392,
+              30.1453,
+              30.1838,
+              30.3826,
+              30.1145,
+              30.1955,
+              30.2011
+            ]
+          },
+          "renderMbPerSecond": 22.718075041347607,
+          "parseMbPerSecond": 25.469099351167902,
+          "renderRelativeToFlux": 1.3170297297155902
+        }
+      }
+    },
+    "all": {
+      "label": "All public documentation sources",
+      "documents": 24,
+      "words": 139851,
+      "images": 73,
+      "tables": 10,
+      "markdownBytes": 1045972,
+      "fluxBytes": 1045195,
+      "markdownCharacters": 1039361,
+      "fluxCharacters": 1038578,
+      "characterDelta": -783,
+      "characterDeltaPercent": -0.08,
+      "markdownNonWhitespace": 872491,
+      "fluxNonWhitespace": 867117,
+      "nonWhitespaceDeltaPercent": -0.62,
+      "engines": {
+        "FluxMark": {
+          "parse": {
+            "iterations": 7,
+            "medianMs": 23.813311142857337,
+            "p95Ms": 24.309537428571534,
+            "minMs": 23.642587857143162,
+            "samples": [
+              23.6426,
+              23.9393,
+              24.2837,
+              23.8133,
+              23.7277,
+              24.1083,
+              23.6519,
+              23.6615,
+              24.3095,
+              23.9962,
+              23.7787
+            ]
+          },
+          "render": {
+            "iterations": 5,
+            "medianMs": 32.740179999999235,
+            "p95Ms": 33.381562600001054,
+            "minMs": 31.76789379999973,
+            "samples": [
+              32.7402,
+              31.9744,
+              32.0485,
+              32.7887,
+              31.9783,
+              32.1997,
+              32.9074,
+              31.7679,
+              33.3816,
+              33.3464,
+              33.2127
+            ]
+          },
+          "renderMbPerSecond": 30.44502587145989,
+          "parseMbPerSecond": 41.85791808440749,
+          "renderRelativeToFlux": 1
+        },
+        "markdown-it": {
+          "parse": {
+            "iterations": 4,
+            "medianMs": 41.85836824999933,
+            "p95Ms": 43.07451525000033,
+            "minMs": 40.7884854999993,
+            "samples": [
+              41.0819,
+              42.7852,
+              40.7885,
+              42.0273,
+              41.5295,
+              41.9152,
+              41.8988,
+              41.8584,
+              41.3736,
+              43.0745,
+              41.6608
+            ]
+          },
+          "render": {
+            "iterations": 4,
+            "medianMs": 47.14528275000157,
+            "p95Ms": 49.2938809999996,
+            "minMs": 45.75243525000042,
+            "samples": [
+              46.9332,
+              47.1453,
+              46.8208,
+              46.3013,
+              48.2345,
+              45.7524,
+              47.5828,
+              46.8306,
+              47.4667,
+              48.1636,
+              49.2939
+            ]
+          },
+          "renderMbPerSecond": 21.15835506533355,
+          "parseMbPerSecond": 23.83075771426169,
+          "renderRelativeToFlux": 1.4399823931940103
+        },
+        "marked": {
+          "parse": {
+            "iterations": 5,
+            "medianMs": 38.31784859999898,
+            "p95Ms": 40.78148579999979,
+            "minMs": 37.382356599999184,
+            "samples": [
+              38.5639,
+              38.1505,
+              37.3824,
+              37.5076,
+              38.5794,
+              38.2276,
+              37.9985,
+              39.8962,
+              40.7815,
+              40.1569,
+              38.3178
+            ]
+          },
+          "render": {
+            "iterations": 4,
+            "medianMs": 42.841179750001174,
+            "p95Ms": 45.68732850000015,
+            "minMs": 42.28355150000061,
+            "samples": [
+              43.9952,
+              44.644,
+              42.6341,
+              42.8188,
+              44.0138,
+              45.6873,
+              42.8412,
+              42.6129,
+              42.2836,
+              42.5633,
+              43.2137
+            ]
+          },
+          "renderMbPerSecond": 23.284060754187117,
+          "parseMbPerSecond": 26.03268890414961,
+          "renderRelativeToFlux": 1.3085199821748743
+        }
+      }
+    }
+  }
+}

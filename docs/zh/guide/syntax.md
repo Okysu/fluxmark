@@ -234,7 +234,18 @@ URL 修饰符直接写在管道右侧：
 [文档|https://example.com/docs,?打开文档]
 ```
 
-管道语法中的内容是原始文本，不会递归解析为另一组行内 token。FluxMark 不使用 Markdown 的 `[文本](URL)` 链接形式，也不定义原始 HTML 或图片语法。
+管道语法中的内容是原始文本，不会递归解析为另一组行内 token。FluxMark 不使用 Markdown 的 `[文本](URL)` 链接形式，也不定义原始 HTML。
+
+### 图片
+
+图片沿用相同的方括号语法，地址在前，可选的替代描述位于管道之后：
+
+```text live
+![https://okysu.github.io/fluxmark/logo.svg|FluxMark 标志]
+![https://okysu.github.io/fluxmark/logo.svg]
+```
+
+`![src]` 是合法的装饰性图片，`alt` 为空；`![src|alt]` 提供无障碍描述。HTML 渲染器会使用同一 URL 策略检查图片地址、转义替代文本，并输出 `loading="lazy" decoding="async"`。非法地址会输出转义后的回退文本，而不是图片元素。不支持 Markdown 的 `![alt](url)` 形式。
 
 ## 解析诊断与位置
 

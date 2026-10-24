@@ -126,7 +126,7 @@ export type FluxNodeType = FluxNode['type'];
 export type FluxNodeByType<T extends FluxNodeType> = Extract<FluxNode, { type: T }>;
 export type FluxParentNode = Extract<FluxNode, { children: unknown[] }>;
 
-export type FluxInlineTokenType = 'text' | 'style' | 'code' | 'break';
+export type FluxInlineTokenType = 'text' | 'style' | 'code' | 'image' | 'break';
 
 export interface FluxInlineStyle {
   bold: boolean;

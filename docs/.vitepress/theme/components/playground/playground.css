@@ -1176,6 +1176,19 @@
   box-shadow: none;
 }
 
+.pg-preview .fx-tooltip::after,
+.fe-preview .fx-tooltip::after {
+  border-color: var(--vp-c-divider);
+  background: var(--vp-c-text-1);
+  color: var(--vp-c-bg);
+}
+
+.pg-preview .fx-image,
+.fe-preview .fx-image {
+  max-height: 220px;
+  margin: 0.75rem auto;
+}
+
 .fe-code {
   min-height: 160px;
   margin: 0;

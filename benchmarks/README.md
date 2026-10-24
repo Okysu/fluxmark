@@ -1,6 +1,6 @@
 # FluxMark benchmarks
 
-This directory contains a reproducible comparison between FluxMark, Markdown-it and marked on public documentation written in Markdown.
+This directory contains a reproducible comparison between FluxMark, Markdown-it, marked and snarkdown on public documentation written in Markdown.
 
 The goal is not to claim that FluxMark is a drop-in Markdown replacement. It measures two related questions on an equivalent semantic corpus:
 
@@ -9,7 +9,9 @@ The goal is not to claim that FluxMark is a drop-in Markdown replacement. It mea
 
 ## Corpus
 
-The **rich** corpus is six public README pages selected for dense links, badges and image references:
+The benchmark uses 24 pinned public Markdown documents, about 140k words and 1.04 MB of normalized source.
+
+The **rich** corpus contains nine public README pages selected for dense links, badges and image references:
 
 - `vuejs/core`
 - `vitejs/vite`
@@ -17,28 +19,33 @@ The **rich** corpus is six public README pages selected for dense links, badges 
 - `nuxt/nuxt`
 - `withastro/astro`
 - `storybookjs/storybook`
+- `denoland/deno`
+- `facebook/react`
+- `microsoft/TypeScript`
 
-The **all** corpus adds six prose-heavy public documentation chapters:
+The **spec** corpus contains authoritative Markdown technical documents: a Rust RFC, a React RFC and a Kubernetes Enhancement Proposal.
 
-- Vue guide introduction, FAQ and community guide
-- Vite troubleshooting guide
-- Node.js pull-request contributing guide
-- Rust Book installation chapter
+The **prose** corpus contains six regular documentation chapters: Vue guide introduction, FAQ and community guide; Vite's troubleshooting guide; Node.js's pull-request contributing guide; and the Rust Book installation chapter.
+
+The **reference** corpus contains six large Node.js API pages covering `fs`, `errors`, `stream`, `http`, `path` and `buffer`.
+
+The **all** corpus combines all 24 sources.
 
 Every source is pinned to a commit in [`sources.mjs`](./sources.mjs), downloaded into `benchmarks/.cache`, and reused after the first run. The raw documents remain under their upstream licenses.
 
 ## Method
 
-Markdown-it's token stream is converted into a common block model for headings, paragraphs, blockquotes, simple lists, fenced code and inline runs. The same model is serialized independently as Markdown and FluxMark.
+Markdown-it's token stream is converted into a common block model for headings, paragraphs, blockquotes, simple lists, fenced code, tables and inline runs. The same model is serialized independently as Markdown and FluxMark.
 
 - Links use `[text](<url>)` in Markdown and `[text|url]` in FluxMark.
 - Bold, italic and strike-through use each language's native shorthand.
 - Fenced code becomes an indented `$ language` block in FluxMark.
+- Markdown tables become FluxMark key-value tables with the same headers and cells.
 - Ordered and unordered lists use physical indentation in FluxMark.
-- Image references are normalized to links in both formats because FluxMark has no image node.
-- HTML-only blocks and tables that cannot be represented equivalently are omitted from both sides.
+- Image references use Markdown `![alt](src)` and FluxMark `![src|alt]`, preserving native image semantics.
+- Raw HTML is omitted from both sides because FluxMark deliberately has no raw HTML node and equivalent rendering is impossible.
 
-Each engine is warmed up before measurement. Timings are the median of 11 samples after calibration, with GC exposed. The benchmark measures parse and full parse-plus-HTML-render time. It does not include browser layout, paint, hydration or network time.
+Each engine is warmed up before measurement. Timings are the median of 11 samples after calibration, with GC exposed. The benchmark measures parse and full parse-plus-HTML-render time. It does not include browser layout, paint, hydration or network time. Snarkdown is measured on the table-free prose subset because it does not implement GFM tables.
 
 Run it with:
 
@@ -56,9 +63,18 @@ pnpm bench:update
 
 See [`RESULTS.md`](./RESULTS.md) for the complete environment, source-size table, all corpus results and pinned source links.
 
-On the recorded 12-document corpus:
+On the recorded 24-document corpus:
 
-- Link/media-rich subset: **2.04% fewer source characters**, **1.96× faster full HTML rendering than Markdown-it**, and **1.44× faster than marked**.
-- All sources: **0.97% fewer source characters**, **1.30× faster than Markdown-it**, and **1.21× faster than marked**.
+| Corpus | Documents | Source characters | Full HTML render vs Markdown-it | vs marked |
+| --- | ---: | ---: | ---: | ---: |
+| Link- and media-rich READMEs | 9 | 0.45% more | 2.30× | 1.54× |
+| Authoritative technical specifications | 3 | 0.34% fewer | 1.38× | 1.46× |
+| Prose-heavy documentation | 6 | 0.75% fewer | 1.37× | 1.39× |
+| Large API and reference documents | 6 | 0.05% more | 1.37× | 1.32× |
+| All sources | 24 | 0.08% fewer | 1.44× | 1.31× |
 
-The rich subset is smaller, so fixed startup and measurement overheads have more influence there. Treat these as relative engineering signals, not universal claims. Re-run on your own hardware before quoting them externally.
+On the table-free prose subset, FluxMark is also about 1.24× faster than snarkdown, a minimal Markdown renderer that does not implement GFM tables.
+
+Source-length gains depend on article shape. Prose and link-heavy text benefit from shorter inline markers; tables can be longer because FluxMark repeats column names per record. The rich subset and prose subset are small enough that startup overhead still matters. Snarkdown does not implement tables, so it is compared only on the table-free prose subset.
+
+Treat these as engineering signals, not universal claims. Re-run on your own hardware before quoting them externally.

@@ -16,4 +16,3 @@ coverage/
 playwright-report/
 test-results/
 benchmarks/.cache/
-benchmarks/results.json

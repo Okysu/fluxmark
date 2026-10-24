@@ -59,6 +59,21 @@ describe('FluxMark inline parser', () => {
     expect(both?.style.italic).toBe(true);
   });
 
+  it('parses first-class images as ![src|alt], with optional alt text', () => {
+    const [image] = parseFluxInline('![https://example.com/architecture.png|Architecture]');
+    expect(image).toMatchObject({
+      type: 'image',
+      content: 'Architecture',
+      attributes: { src: 'https://example.com/architecture.png' },
+    });
+    const [withoutAlt] = parseFluxInline('![https://example.com/architecture.png]');
+    expect(withoutAlt).toMatchObject({
+      type: 'image',
+      content: '',
+      attributes: { src: 'https://example.com/architecture.png' },
+    });
+  });
+
   it('treats prototype property names as ordinary custom modifiers', () => {
     const [token] = parseFluxInline('[safe|constructor,toString]');
     expect(token?.style.customModifiers).toEqual(['constructor', 'toString']);

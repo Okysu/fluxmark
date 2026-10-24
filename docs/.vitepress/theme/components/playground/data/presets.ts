@@ -10,6 +10,7 @@ export interface PlaygroundPreset {
 
 const englishWelcome = `# One source. Clear output.
   Welcome to the [FluxMark|badge] playground. Edit this document and watch the **same AST** become semantic HTML and inspectable JSON.
+  ![https://okysu.github.io/fluxmark/logo.svg|FluxMark mark]
   > [tip] Everything here is live
     Tasks, links, anchors and the outline all operate on real compiler output. Parsing happens in your browser.
   # Try the feedback loop
@@ -101,6 +102,7 @@ const englishRelease = `# Release notes / 0.1.0
 
 const chineseWelcome = `# 一份源码，清晰输出
   欢迎使用 [FluxMark|badge] 工作台。编辑这份文档，观察**同一棵 AST** 如何实时生成语义化 HTML 与可检查的 JSON。
+  ![https://okysu.github.io/fluxmark/logo.svg|FluxMark 标志]
   > [tip] 所有视图都是实时的
     任务、链接、锚点与目录都来自真实编译结果。解析完全在浏览器中完成。
   # 体验任务回写

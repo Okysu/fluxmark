@@ -18,19 +18,23 @@ FluxMark is a lightweight TypeScript compiler for structured documents. It turns
 - **Typed by design.** Every node keeps source locations and ranges. Visit, filter or replace nodes with a fully typed AST walker.
 - **Extensible at every stage.** Add block rules, pipe modifiers, AST transforms and HTML renderers through one plugin interface.
 - **Accessible output.** Compile to clean semantic HTML with strict escaping, URL allowlisting and a polished default stylesheet.
+- **First-class images.** Use `![src|alt]` with optional alternative text, lazy loading by default and the same URL safety policy as links.
 - **Interactive by default.** Task checkboxes and live Playground examples share the same compiler and can update their original source.
 - **Bilingual documentation.** Full English and Chinese guides, API reference and a live Playground built with VitePress.
 
 ## Compact source, faster rendering
 
-Given the same normalized document hierarchy and content, FluxMark expresses public articles in fewer source characters and compiles them to HTML faster than established Markdown toolchains.
+We benchmark 24 pinned public Markdown documents: about 140k words and 1.04 MB of normalized source spanning link-heavy READMEs, technical specifications, editorial documentation and large API references.
 
-| Public corpus | Source characters | Full HTML render vs markdown-it | vs marked |
-| --- | ---: | ---: | ---: |
-| Six link- and media-rich READMEs | 2.04% fewer | ~2.0× | ~1.5× |
-| All twelve documentation sources | 0.97% fewer | ~1.3× | ~1.2× |
+| Public corpus | Documents | Source characters | HTML render vs markdown-it | vs marked |
+| --- | ---: | ---: | ---: | ---: |
+| Link- and media-rich READMEs | 9 | 0.45% more | 2.30× | 1.54× |
+| Authoritative technical specifications | 3 | 0.34% fewer | 1.38× | 1.46× |
+| Prose-heavy documentation | 6 | 0.75% fewer | 1.37× | 1.39× |
+| Large API and reference docs | 6 | 0.05% more | 1.37× | 1.32× |
+| All sources | 24 | 0.08% fewer | 1.44× | 1.31× |
 
-The benchmark normalizes public Markdown sources into the same semantic tree, serializes that tree as Markdown and FluxMark, and measures parse plus semantic HTML generation. Image references are normalized to links because FluxMark does not have an image node. See [the methodology, pinned sources and full results](./benchmarks/RESULTS.md).
+Source-length gains depend on content. FluxMark's shorter links, emphasis and block markers help prose and link-heavy text, while tables repeat column names per row and can offset those savings. Rendering remains faster across every corpus, including 1.24× faster than snarkdown on the table-free prose subset. Tables are included and images are preserved as native image nodes. Raw HTML is excluded because an equivalent render is impossible. See [the full methodology, statistics and pinned sources](./benchmarks/RESULTS.md).
 
 ## Install
 
@@ -73,6 +77,7 @@ The source above renders a section, a styled paragraph, a callout and an interac
 # Project status
   A paragraph with *bold*, _italic_, =highlight= and ~strike~.
   Links use [pipe modifiers|https://example.com,?Optional tooltip].
+  ![https://okysu.github.io/fluxmark/logo.svg|FluxMark mark]
 
   > [warn] Nested content
     Indented lines belong to the callout automatically.
@@ -168,6 +173,16 @@ The stylesheet is available from `fluxmark/styles.css` or as a string through `g
 The [Playground](https://okysu.github.io/fluxmark/playground) compiles source entirely in the browser. Edit a document and switch between semantic HTML, formatted source and the transformed AST, with parse and render timings at the bottom.
 
 The [language guide](https://okysu.github.io/fluxmark/guide/syntax) embeds interactive examples directly below key syntax sections, so every feature can be inspected without leaving the documentation.
+
+## Migrating Markdown
+
+An experimental converter is included for moving existing Markdown content into FluxMark:
+
+```bash
+pnpm migrate path/to/article.md --output article.fx
+```
+
+It converts headings, paragraphs, common inline styles, links, images, lists, tables and code fences. Raw HTML blocks are reported and omitted because FluxMark intentionally does not accept raw HTML. Review generated documents before publishing; the converter normalizes markup rather than promising byte-for-byte fidelity.
 
 ## Documentation
 

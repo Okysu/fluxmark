@@ -32,6 +32,16 @@ describe('FluxHtmlRenderer and compiler plugins', () => {
     expect(safeFluxUrl('/guide')).toBe('/guide');
   });
 
+  it('renders safe images and escapes their alt text', () => {
+    const html = toHTML(parseFluxMarkDocument('![https://example.com/architecture.png|A <diagram>]'));
+    expect(html).toContain('class="fx-image"');
+    expect(html).toContain('src="https://example.com/architecture.png"');
+    expect(html).toContain('alt="A &lt;diagram&gt;"');
+    const blocked = toHTML(parseFluxMarkDocument('![javascript:alert(1)|bad]'));
+    expect(blocked).not.toContain('<img');
+    expect(blocked).toContain('fx-image-fallback');
+  });
+
   it('lets block and inline overrides wrap default rendering', () => {
     const ast = parseFluxMarkDocument('# Hello\n  [Ctrl+C|kbd]');
     const html = new FluxHtmlRenderer({

@@ -49,12 +49,21 @@ function normalizeHref(value) {
   return href.replace(/[<>()\s,|]/g, (character) => encodeURIComponent(character));
 }
 
+function normalizeImageSrc(value) {
+  if (typeof value !== 'string') return null;
+  const src = value.trim();
+  if (src.length === 0 || /[\u0000-\u0020\u007f]/.test(src)) return null;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(src) && !/^https?:\/\//i.test(src)) return null;
+  return src.replace(/[<>()\s,|]/g, (character) => encodeURIComponent(character));
+}
+
 function sameStyle(left, right) {
   return (
     left.bold === right.bold &&
     left.italic === right.italic &&
     left.strike === right.strike &&
     left.code === right.code &&
+    left.image === right.image &&
     left.href === right.href
   );
 }
@@ -77,6 +86,7 @@ function parseInline(token, stats) {
     italic: active.italic > 0,
     strike: active.strike > 0,
     code: false,
+    image: false,
     href: active.href,
   });
 
@@ -115,10 +125,10 @@ function parseInline(token, stats) {
         active.href = null;
       } else if (child.type === 'image') {
         stats.images += 1;
-        const alt = sanitizeText(child.content || 'image');
-        const href = normalizeHref(child.attrGet('src'));
+        const alt = sanitizeText(child.content);
+        const href = normalizeImageSrc(child.attrGet('src'));
         if (href !== null) {
-          pushRun(runs, alt, { ...style(), href });
+          pushRun(runs, alt, { ...style(), image: true, href });
         } else if (alt.length > 0) {
           pushRun(runs, alt, style());
         }
@@ -170,6 +180,38 @@ function parseList(tokens, openIndex, ordered, end, stats) {
   };
 }
 
+function parseTable(tokens, openIndex, stats) {
+  stats.tables += 1;
+  const close = findClose(tokens, openIndex, 'table_open', 'table_close');
+  const headers = [];
+  const rows = [];
+  let cells = [];
+  let inHeader = false;
+  for (let index = openIndex + 1; index < close; index += 1) {
+    const token = tokens[index];
+    if (token.type === 'thead_open') {
+      inHeader = true;
+    } else if (token.type === 'thead_close') {
+      inHeader = false;
+    } else if (token.type === 'tr_open') {
+      cells = [];
+    } else if (token.type === 'th_open') {
+      const inline = tokens[index + 1];
+      headers.push(inline?.type === 'inline' ? parseInline(inline, stats) : []);
+    } else if (token.type === 'td_open') {
+      const inline = tokens[index + 1];
+      cells.push(inline?.type === 'inline' ? parseInline(inline, stats) : []);
+    } else if (token.type === 'tr_close' && !inHeader && cells.length > 0) {
+      rows.push(cells);
+      cells = [];
+    }
+  }
+  return {
+    block: { type: 'table', headers, rows },
+    next: close + 1,
+  };
+}
+
 function parseBlocks(tokens, start, end, stats) {
   const blocks = [];
   let index = start;
@@ -210,8 +252,9 @@ function parseBlocks(tokens, start, end, stats) {
       blocks.push(list.block);
       index = list.next;
     } else if (token.type === 'table_open') {
-      stats.tables += 1;
-      index = findClose(tokens, index, 'table_open', 'table_close') + 1;
+      const table = parseTable(tokens, index, stats);
+      blocks.push(table.block);
+      index = table.next;
     } else if (token.type === 'html_block') {
       stats.htmlBlocks += 1;
       index += 1;
@@ -242,7 +285,10 @@ export function normalizeMarkdown(source) {
 function inlineMarkdown(runs) {
   return runs
     .map((run) => {
-      let value = run.code ? run.text : run.text;
+      if (run.image) {
+        return run.href === null ? run.text : `![${run.text}](<${run.href}>)`;
+      }
+      let value = run.text;
       if (run.code) value = `\`${value}\``;
       if (run.bold) value = `**${value}**`;
       if (run.italic) value = `_${value}_`;
@@ -256,6 +302,10 @@ function inlineMarkdown(runs) {
 function inlineFluxMark(runs) {
   return runs
     .map((run) => {
+      if (run.image) {
+        if (run.href === null) return run.text;
+        return run.text.length > 0 ? `![${run.href}|${run.text}]` : `![${run.href}]`;
+      }
       const styles = [];
       if (run.bold) styles.push('b');
       if (run.italic) styles.push('i');
@@ -272,6 +322,11 @@ function inlineFluxMark(runs) {
       return `[${run.text}|${styles.join(',')}]`;
     })
     .join('');
+}
+
+function tableHeaders(runs, index) {
+  const text = runs.map((run) => run.text).join('').trim();
+  return (text.length > 0 ? text : `Column ${index + 1}`).replace(/:/g, '：');
 }
 
 function fenceFor(content) {
@@ -310,6 +365,24 @@ function renderBlocks(blocks, dialect, depth = 0) {
       } else {
         lines.push(`${indent}$${block.language.length > 0 ? ` ${block.language}` : ''}`);
         lines.push(indentLines(block.content, `${indent}\t`));
+      }
+    } else if (block.type === 'table') {
+      const headers = block.headers.map((runs, index) => tableHeaders(runs, index));
+      if (dialect === 'md') {
+        lines.push(`${indent}| ${headers.join(' | ')} |`);
+        lines.push(`${indent}| ${headers.map(() => '---').join(' | ')} |`);
+        for (const row of block.rows) {
+          const cells = headers.map((_header, index) => inline(row[index] ?? []).trim());
+          lines.push(`${indent}| ${cells.join(' | ')} |`);
+        }
+      } else {
+        lines.push(`${indent}@`);
+        for (const row of block.rows) {
+          const fields = headers.map(
+            (header, index) => `${header}: ${inline(row[index] ?? []).trim()}`,
+          );
+          lines.push(`${indent}- ${fields.join(' | ')}`);
+        }
       }
     } else if (block.type === 'quote') {
       if (dialect === 'md') {

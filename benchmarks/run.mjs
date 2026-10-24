@@ -3,6 +3,7 @@ import { cpus, platform, release } from 'node:os';
 import { performance } from 'node:perf_hooks';
 import MarkdownIt from 'markdown-it';
 import { marked } from 'marked';
+import snarkdown from 'snarkdown';
 import { FluxHtmlRenderer, FluxMarkParser } from '../packages/fluxmark/dist/index.js';
 import { rawUrl, sources } from './sources.mjs';
 import {
@@ -156,6 +157,9 @@ for (const source of sources) {
 
 const groups = [
   { id: 'rich', label: 'Link/media-rich public READMEs' },
+  { id: 'spec', label: 'Authoritative technical specifications' },
+  { id: 'prose', label: 'Prose-heavy documentation chapters' },
+  { id: 'reference', label: 'Large API and reference documents' },
   { id: 'all', label: 'All public documentation sources' },
 ];
 
@@ -185,11 +189,19 @@ for (const group of groups) {
       render: measure(() => marked.parse(markdownCorpus)),
     },
   };
+  if (group.id === 'prose') {
+    engines.snarkdown = {
+      parse: null,
+      render: measure(() => snarkdown(markdownCorpus)),
+    };
+  }
 
   const fluxRender = engines.FluxMark.render.medianMs;
   for (const engine of Object.values(engines)) {
     engine.renderMbPerSecond = mdBytes / 1024 / 1024 / (engine.render.medianMs / 1000);
-    engine.parseMbPerSecond = mdBytes / 1024 / 1024 / (engine.parse.medianMs / 1000);
+    if (engine.parse !== null) {
+      engine.parseMbPerSecond = mdBytes / 1024 / 1024 / (engine.parse.medianMs / 1000);
+    }
     engine.renderRelativeToFlux = engine.render.medianMs / fluxRender;
   }
   engines.FluxMark.renderMbPerSecond =
@@ -205,6 +217,7 @@ for (const group of groups) {
   group.characters = characterStats(markdownCorpus, fluxMarkCorpus);
   group.words = entries.reduce((sum, entry) => sum + entry.words, 0);
   group.images = entries.reduce((sum, entry) => sum + entry.stats.images, 0);
+  group.tables = entries.reduce((sum, entry) => sum + entry.stats.tables, 0);
   group.engines = engines;
 }
 
@@ -240,6 +253,7 @@ const results = {
         documents: group.entries.length,
         words: group.words,
         images: group.images,
+        tables: group.tables,
         markdownBytes: group.mdBytes,
         fluxBytes: group.fluxBytes,
         ...group.characters,
@@ -249,7 +263,10 @@ const results = {
   ),
 };
 
+const categoryOrder = ['rich', 'spec', 'prose', 'reference', 'all'];
 const rich = results.groups.rich;
+const spec = results.groups.spec;
+const prose = results.groups.prose;
 const all = results.groups.all;
 const sourceTable = sourceRows(loaded);
 
@@ -257,10 +274,35 @@ function engineTable(engines) {
   return Object.entries(engines)
     .map(
       ([name, engine]) =>
-        `| ${name} | ${engine.parse.medianMs.toFixed(2)} | ${engine.render.medianMs.toFixed(2)} | ${engine.renderMbPerSecond.toFixed(2)} | ${engine.renderRelativeToFlux.toFixed(2)}× |`,
+        `| ${name} | ${engine.parse === null ? '—' : engine.parse.medianMs.toFixed(2)} | ${engine.render.medianMs.toFixed(2)} | ${engine.renderMbPerSecond.toFixed(2)} | ${engine.renderRelativeToFlux.toFixed(2)}× |`,
     )
     .join('\n');
 }
+
+function speedup(group, engineName) {
+  return group.engines[engineName].render.medianMs / group.engines.FluxMark.render.medianMs;
+}
+
+const categoryRows = categoryOrder
+  .map((id) => {
+    const group = results.groups[id];
+    return `| ${group.label} | ${group.documents} | ${group.words.toLocaleString()} | ${group.images} | ${group.tables} | ${group.characterDeltaPercent > 0 ? '+' : ''}${group.characterDeltaPercent}% | ${group.nonWhitespaceDeltaPercent > 0 ? '+' : ''}${group.nonWhitespaceDeltaPercent}% | ${speedup(group, 'markdown-it').toFixed(2)}× | ${speedup(group, 'marked').toFixed(2)}× |`;
+  })
+  .join('\n');
+
+const throughputSections = categoryOrder
+  .map((id) => {
+    const group = results.groups[id];
+    return `### ${group.label}
+
+| Engine | Parse median (ms) | Render median (ms) | Render MiB/s | Render time vs FluxMark |
+| --- | ---: | ---: | ---: | ---: |
+${engineTable(group.engines)}
+
+FluxMark render speedup versus Markdown-it: **${speedup(group, 'markdown-it').toFixed(2)}×**
+FluxMark render speedup versus marked: **${speedup(group, 'marked').toFixed(2)}×**`;
+  })
+  .join('\n\n');
 
 const report = `# FluxMark benchmark results
 
@@ -270,9 +312,9 @@ Generated at ${results.generatedAt} with Node.js ${process.version} on ${results
 
 Public Markdown sources are normalized into a common semantic subset of headings, paragraphs, blockquotes, simple lists, fenced code, links, inline emphasis and image references. The same normalized block tree is serialized as Markdown and FluxMark. The benchmark measures parsing and full semantic HTML string rendering with Markdown-it, marked and FluxMark.
 
-Image references are normalized to links for both formats because FluxMark has no image node; raw HTML and tables that cannot be represented equivalently are omitted from both sides. This is a compiler throughput benchmark, not a browser paint benchmark. Results depend on hardware, Node.js and package versions.
+Image references use native image syntax in both formats. Tables are retained and serialized through each format's native table syntax. Raw HTML is omitted from both sides because FluxMark deliberately has no raw HTML node and an equivalent rendering comparison is impossible. This is a compiler throughput benchmark, not a browser paint benchmark. Results depend on hardware, Node.js and package versions. The lightweight snarkdown parser is measured only on the table-free prose subset because it does not implement GFM tables.
 
-The **rich** corpus contains six public README/media pages chosen for heavy link and image-reference usage. The **all** corpus adds six prose-heavy documentation chapters.
+The **rich** corpus contains nine public README/media pages chosen for dense links and image references. The **spec** corpus contains three authoritative Markdown technical specifications (Rust RFC, React RFC, Kubernetes KEP). The **prose** corpus contains six regular documentation chapters. The **reference** corpus adds six large Node.js API reference documents, including table-heavy pages. The **all** corpus combines all twenty-four sources.
 
 ## Source size
 
@@ -281,29 +323,15 @@ The **rich** corpus contains six public README/media pages chosen for heavy link
 ${sourceTable}
 ${totalRow(loaded)}
 
-### Link/media-rich subset
+## Results by source type
 
-${rich.documents} documents, ${rich.words.toLocaleString()} words, ${rich.images} image references. FluxMark used **${Math.abs(rich.characterDeltaPercent).toFixed(2)}% fewer source characters** and **${Math.abs(rich.nonWhitespaceDeltaPercent).toFixed(2)}% fewer non-whitespace characters**.
+| Corpus | Documents | Words | Images | Tables | Source chars | Non-whitespace chars | Render vs Markdown-it | Render vs marked |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+${categoryRows}
 
 ## Throughput
 
-### Link/media-rich subset
-
-| Engine | Parse median (ms) | Render median (ms) | Render MiB/s | Render time vs FluxMark |
-| --- | ---: | ---: | ---: | ---: |
-${engineTable(rich.engines)}
-
-FluxMark render speedup versus Markdown-it: **${(rich.engines['markdown-it'].render.medianMs / rich.engines.FluxMark.render.medianMs).toFixed(2)}×**
-FluxMark render speedup versus marked: **${(rich.engines.marked.render.medianMs / rich.engines.FluxMark.render.medianMs).toFixed(2)}×**
-
-### All sources
-
-| Engine | Parse median (ms) | Render median (ms) | Render MiB/s | Render time vs FluxMark |
-| --- | ---: | ---: | ---: | ---: |
-${engineTable(all.engines)}
-
-FluxMark render speedup versus Markdown-it: **${(all.engines['markdown-it'].render.medianMs / all.engines.FluxMark.render.medianMs).toFixed(2)}×**
-FluxMark render speedup versus marked: **${(all.engines.marked.render.medianMs / all.engines.FluxMark.render.medianMs).toFixed(2)}×**
+${throughputSections}
 
 ## Sources
 
@@ -325,6 +353,12 @@ console.log(
     'FluxMark benchmark',
     `Rich corpus: ${rich.documents} docs, ${rich.words.toLocaleString()} words, ${rich.images} image refs`,
     `Source: Markdown ${rich.markdownCharacters.toLocaleString()} chars, FluxMark ${rich.fluxCharacters.toLocaleString()} chars (${rich.characterDeltaPercent}%)`,
+    '',
+    'Summary by corpus:',
+    ...categoryOrder.map((id) => {
+      const group = results.groups[id];
+      return `${group.label.padEnd(44)} chars ${group.characterDeltaPercent.toFixed(2).padStart(6)}%  render vs md ${speedup(group, 'markdown-it').toFixed(2)}x  vs marked ${speedup(group, 'marked').toFixed(2)}x`;
+    }),
     '',
     'Engine          Parse ms   Render ms   Render MiB/s',
     ...Object.entries(rich.engines).map(

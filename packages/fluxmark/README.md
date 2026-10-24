@@ -16,13 +16,16 @@ FluxMark is not a Markdown compatibility layer. Its indentation-based blocks, pi
 - Mutable depth-first `walkAST` with `enter`, `leave`, `skip`, `remove` and `replace`.
 - Semantic HTML with safe defaults, fine-grained renderer overrides and standalone CSS.
 - Exact task source updates without reformatting the document.
+- Native images with `![src|alt]`, optional alt text, lazy loading and URL validation.
 - Documentation-embedded live examples that surface HTML, AST and compile timings.
 
 ## Compact and fast
 
-On a reproducible corpus of link-heavy public documentation, equivalent FluxMark sources used about 2% fewer characters than normalized Markdown. Full parsing and semantic HTML generation were about 2.0× faster than markdown-it and 1.5× faster than marked on that corpus.
+On a reproducible 24-document public corpus of about 1 MB normalized Markdown, full parsing plus semantic HTML generation was about 1.44× faster than markdown-it and 1.31× faster than marked. On link-heavy READMEs the render advantage increased to about 2.3×.
 
-See the [benchmark methodology and pinned public sources](https://github.com/Okysu/fluxmark/blob/main/benchmarks/RESULTS.md). Results depend on hardware and input; the benchmark is not a DOM paint measurement.
+Source-length savings are content-dependent: prose used about 0.75% fewer characters, while table-heavy material can be slightly larger because FluxMark repeats column names per record. Tables are included in the benchmark; images use FluxMark's native image node, and raw HTML is excluded because FluxMark has no raw HTML node.
+
+See the [benchmark methodology and pinned public sources](https://github.com/Okysu/fluxmark/blob/main/benchmarks/RESULTS.md). Results depend on hardware and input shape, and the benchmark is not a DOM paint measurement.
 
 ## Installation
 
@@ -114,6 +117,7 @@ Blocks are nested by physical indentation. A space is one indentation column; a 
 | Unordered list | `- item`, `-- nested item`, or `* item` |
 | Ordered list | `1. item`, `2. item`, `2.1. nested item` |
 | Task | `* [ ] item` or `* [x] item` |
+| Image | `![src\|alt]` (alt optional) |
 | Horizontal rule | `---` or more hyphens on an otherwise empty line |
 | Bold | `*text*` or `**text**` |
 | Italic | `_text_` |
@@ -122,7 +126,7 @@ Blocks are nested by physical indentation. A space is one indentation column; a 
 
 Pipe modifiers use `[content|modifier,modifier]`. Built-in aliases include `b`, `i`, `u`, `s`, `m`, `c` and their long names, three- or six-digit hex colors, HTTP(S)/mailto URLs, and `?tooltip`. Place a tooltip last because it consumes the remaining modifier text.
 
-FluxMark does not use fenced Markdown code blocks, Markdown pipe tables, Markdown link syntax, raw HTML or image syntax. See the [complete syntax guide](https://okysu.github.io/fluxmark/guide/syntax).
+FluxMark does not use fenced Markdown code blocks, Markdown pipe tables, Markdown link syntax or raw HTML. Images use the native `![src|alt]` form rather than Markdown image syntax. See the [complete syntax guide](https://okysu.github.io/fluxmark/guide/syntax).
 
 ## Default styles
 
