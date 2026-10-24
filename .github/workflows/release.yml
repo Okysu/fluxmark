@@ -1,0 +1,75 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Verify, build and publish
+    runs-on: ubuntu-latest
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/fluxmark
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify tag matches package version
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          PACKAGE_VERSION="$(node -p "require('./packages/fluxmark/package.json').version")"
+          if [ "${GITHUB_REF_NAME}" != "v${PACKAGE_VERSION}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match package version v${PACKAGE_VERSION}"
+            exit 1
+          fi
+          echo "Publishing fluxmark@${PACKAGE_VERSION}"
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build SDK
+        run: pnpm --filter fluxmark build
+
+      # Authentication: create a repository secret named NPM_TOKEN containing an
+      # npm automation or granular token with permission to publish "fluxmark".
+      # The id-token permission above is used for provenance.
+      #
+      # Trusted publishing alternative: configure the fluxmark package and this
+      # workflow on npmjs.com and switch the publish command to a modern npm CLI.
+      # Do not change modes until the npm trusted publisher is fully configured.
+      - name: Publish fluxmark with provenance
+        run: pnpm --filter fluxmark publish --access public --provenance --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

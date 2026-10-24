@@ -1,0 +1,71 @@
+:root {
+  --vp-c-brand-1: #3451b2;
+  --vp-c-brand-2: #3a5ccc;
+  --vp-c-brand-3: #5672cd;
+  --vp-c-brand-soft: rgb(52 81 178 / 12%);
+  --vp-home-hero-name-color: var(--vp-c-brand-1);
+  --vp-home-hero-name-background: none;
+  --vp-home-hero-image-background-image: none;
+  --vp-home-hero-image-filter: none;
+  --vp-code-line-height: 1.7;
+  --vp-code-block-bg: var(--vp-c-bg-alt);
+}
+
+.dark {
+  --vp-c-brand-1: #a8b1ff;
+  --vp-c-brand-2: #5c73db;
+  --vp-c-brand-3: #4e63d7;
+  --vp-c-brand-soft: rgb(168 177 255 / 14%);
+  --vp-code-block-bg: var(--vp-c-bg-alt);
+}
+
+.VPNavBar .VPNavBarTitle .title {
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.VPDoc .container .content {
+  max-width: 920px;
+}
+
+.VPFeature {
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-soft);
+  transition: border-color 160ms ease;
+}
+
+.VPFeature:hover {
+  border-color: var(--vp-c-brand-2);
+  transform: none;
+}
+
+.vp-doc img {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+}
+
+/* Playground pages use VitePress navigation with a full-width workspace. */
+.VPPage {
+  padding: 0;
+}
+
+.VPPage .vp-doc {
+  max-width: none;
+  padding: 0;
+}
+
+.VPPage .vp-doc > div {
+  max-width: none;
+}
+
+@media (min-width: 768px) {
+  .VPPage .vp-doc {
+    padding-inline: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .VPFeature {
+    transition: none;
+  }
+}

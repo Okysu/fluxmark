@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "noEmit": true,
+    "exactOptionalPropertyTypes": false,
+    "jsx": "preserve",
+    "types": ["node"],
+    "paths": {
+      "fluxmark": ["../packages/fluxmark/src/index.ts"]
+    }
+  },
+  "include": [".vitepress/**/*.ts", ".vitepress/**/*.vue"]
+}

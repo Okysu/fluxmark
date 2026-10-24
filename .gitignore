@@ -1,0 +1,17 @@
+node_modules/
+.pnpm-store/
+dist/
+coverage/
+.vitepress/cache/
+**/.vitepress/cache/
+.vitepress/dist/
+**/.vitepress/dist/
+*.local
+*.log
+*.tgz
+.env
+.env.*
+!.env.example
+.DS_Store
+playwright-report/
+test-results/

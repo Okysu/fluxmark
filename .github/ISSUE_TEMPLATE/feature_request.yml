@@ -1,0 +1,29 @@
+name: Feature request
+description: Propose a language, SDK, renderer or documentation improvement
+title: "[Feature] "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What are you trying to accomplish, and where is the current limitation?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the desired syntax, API or behavior. Include a small example when useful.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Mention existing extension points or other approaches you evaluated.
+  - type: checkboxes
+    id: compatibility
+    options:
+      - label: This proposal may require a breaking change.
+        required: false

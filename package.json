@@ -1,0 +1,35 @@
+{
+  "name": "fluxmark-monorepo",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.25.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Okysu/fluxmark.git"
+  },
+  "homepage": "https://okysu.github.io/fluxmark/",
+  "bugs": {
+    "url": "https://github.com/Okysu/fluxmark/issues"
+  },
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "docs:dev": "vitepress dev docs",
+    "build": "pnpm --filter fluxmark build && vitepress build docs",
+    "build:docs": "vitepress build docs",
+    "test": "pnpm --filter fluxmark test",
+    "test:coverage": "pnpm --filter fluxmark test:coverage",
+    "typecheck": "pnpm --filter fluxmark typecheck && vue-tsc --noEmit -p docs/tsconfig.json",
+    "docs:preview": "vitepress preview docs",
+    "clean": "pnpm -r clean"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.9.3",
+    "vitepress": "^1.6.4",
+    "vue": "^3.5.13",
+    "vue-tsc": "^2.2.0"
+  }
+}

@@ -1,0 +1,43 @@
+name: Bug report
+description: Report incorrect parsing, rendering or build behavior
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the actual behavior and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Provide a minimal FluxMark source sample, TypeScript code and steps.
+      placeholder: |
+        const source = '# Example'
+        // Parsing or rendering code
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: FluxMark version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Include the runtime, browser if relevant, and operating system.
+      placeholder: Node.js 22, Ubuntu 24.04
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or diagnostics
+      description: Paste error messages and FluxParseIssue output when available.
+      render: text
