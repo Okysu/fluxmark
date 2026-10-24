@@ -98,6 +98,13 @@ After`);
     expect(table.rows[1]?.cells.State?.tokens[0]?.content).toBe('WIP');
   });
 
+  it('keeps escaped pipes inside table cells', () => {
+    const ast = parseFluxMarkDocument('@ T\n  - A | B\n  - x\\|y | z');
+    const table = ast.children[0] as FluxDataTable;
+    expect(table.rows[0]?.cells.A?.tokens.map((token) => token.content).join('')).toBe('x|y');
+    expect(table.rows[0]?.cells.B?.tokens[0]?.content).toBe('z');
+  });
+
   it('stores prototype-like table column names as safe own properties', () => {
     const ast = parseFluxMarkDocument(`@ Safe keys
   - __proto__: first | constructor: second
@@ -108,6 +115,20 @@ After`);
     expect(table.rows[0]?.cells['constructor']?.tokens[0]?.content).toBe('second');
     expect(table.rows[1]?.cells.__proto__).toBeUndefined();
     expect(table.rows[1]?.cells['constructor']?.tokens[0]?.content).toBe('third');
+  });
+
+  it('caps pathological nesting without overflowing the stack', () => {
+    let source = '';
+    for (let depth = 0; depth < 300; depth += 1) source += `${'\t'.repeat(depth)}>\n`;
+    const ast = parseFluxMarkDocument(source);
+    expect(ast.issues.some((issue) => /Maximum block nesting/.test(issue.message))).toBe(true);
+  });
+
+  it('recognizes task markers on -, + and * lists', () => {
+    const ast = parseFluxMarkDocument('- [ ] todo\n+ [x] done\n* [X] shipped');
+    const list = ast.children[0] as FluxList;
+    expect(list.children.map((item) => item.checked)).toEqual([false, true, true]);
+    expect(toggleTaskInSource('- [ ] todo', 1)).toBe('- [x] todo');
   });
 
   it('supports physical and marker-based list nesting and outline numbers', () => {

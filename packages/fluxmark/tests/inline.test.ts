@@ -68,6 +68,15 @@ describe('FluxMark inline parser', () => {
     expect(html).toMatchObject({ type: 'html', content: '<span class="mark">' });
   });
 
+  it('supports relative links, anchors and explicit url: destinations', () => {
+    const tokens = parseFluxInline('[guide|docs/guide.md] [anchor|#install] [query|url:?q=1]');
+    expect(tokens.filter((token) => token.style.href !== null).map((token) => token.style.href)).toEqual([
+      'docs/guide.md',
+      '#install',
+      '?q=1',
+    ]);
+  });
+
   it('parses first-class images as ![src|alt], with optional alt text', () => {
     const [image] = parseFluxInline('![https://example.com/architecture.png|Architecture]');
     expect(image).toMatchObject({

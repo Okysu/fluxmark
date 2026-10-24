@@ -106,7 +106,12 @@ function isColorModifier(modifier: string): boolean {
 }
 
 function isUrlModifier(modifier: string): boolean {
-  return /^(?:https?:\/\/|mailto:)/i.test(modifier);
+  if (/^(?:https?:\/\/|mailto:|tel:|url:)/i.test(modifier)) return true;
+  if (/^#/.test(modifier)) return true;
+  if (/^\/(?!\/)/.test(modifier)) return true;
+  if (/^\.{1,2}\//.test(modifier)) return true;
+  if (/^[^\s,]+\.[a-z0-9]+(?:[#?].*)?$/i.test(modifier)) return true;
+  return /^[^\s,]+\/[^\s,]+(?:[#?].*)?$/.test(modifier);
 }
 
 function isBuiltInModifier(modifier: string): boolean {
@@ -504,7 +509,7 @@ export class FluxInlineParser {
       } else if (isColorModifier(modifier)) {
         style.color = modifier.toLowerCase();
       } else if (isUrlModifier(modifier)) {
-        style.href = modifier;
+        style.href = /^url:/i.test(modifier) ? modifier.slice(4) : modifier;
       }
     }
   }

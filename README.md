@@ -25,17 +25,17 @@ FluxMark is a lightweight TypeScript compiler for structured documents. It turns
 
 ## Compact source, faster rendering
 
-We benchmark 24 pinned public Markdown documents: about 141k words and 1.08 MB of normalized source spanning link-heavy READMEs, technical specifications, editorial documentation and large API references.
+We benchmark 30 pinned public Markdown documents: about 146k words and 1.18 MB of normalized source spanning link-heavy READMEs, technical specifications, editorial documentation and large API references.
 
 | Public corpus | Documents | Source characters | HTML render vs markdown-it | vs marked |
 | --- | ---: | ---: | ---: | ---: |
-| Link- and media-rich READMEs | 9 | 1.29% fewer | 1.77× | 1.22× |
-| Authoritative technical specifications | 3 | 0.33% fewer | 1.23× | 1.32× |
-| Prose-heavy documentation | 6 | 0.58% fewer | 1.27× | 1.25× |
-| Large API and reference docs | 6 | 0.07% more | 1.30× | 1.16× |
-| All sources | 24 | 0.12% fewer | 1.37× | 1.20× |
+| Link- and media-rich READMEs | 15 | 1.58% fewer | 1.55× | 1.16× |
+| Authoritative technical specifications | 3 | 0.03% more | 1.11× | 1.19× |
+| Prose-heavy documentation | 6 | 1.55% fewer | 1.15× | 1.12× |
+| Large API and reference docs | 6 | 1.89% fewer | 1.16× | 1.13× |
+| All sources | 30 | 1.47% fewer | 1.24× | 1.11× |
 
-Most corpora use fewer source characters. Compact tables declare columns once; links, emphasis and block markers stay short. Large code-heavy API references are effectively at parity. Rendering is faster across every corpus than markdown-it and marked, but the minimal snarkdown parser is still about 1.24× faster on prose because it implements far less syntax. Images and raw HTML use native nodes; raw HTML requires explicit `allowHtml`. See [the full methodology, statistics and pinned sources](./benchmarks/RESULTS.md).
+All but the specification corpus use fewer source characters; specifications are at parity. Compact tables declare columns once, while links, escapes and block markers stay short. Rendering is faster across every corpus than markdown-it and marked. The minimal snarkdown parser is essentially at parity on prose because it implements far less syntax. Images and raw HTML use native nodes; raw HTML requires explicit `allowHtml`. See [the full methodology, statistics and pinned sources](./benchmarks/RESULTS.md).
 
 ## Install
 
@@ -183,7 +183,7 @@ An experimental converter is included for moving existing Markdown content into 
 pnpm migrate path/to/article.md --output article.fx
 ```
 
-It converts complete CommonMark 0.31.2 block and inline structure, including reference links, raw HTML, escapes, images, nested lists, block quotes and code blocks. Raw HTML is preserved with native nodes and requires `{ allowHtml: true }` when rendering. GFM tables, footnotes and task-list extensions are outside CommonMark and are not converted.
+It converts complete CommonMark 0.31.2 block and inline structure, including reference links, raw HTML, escapes, images, nested lists, block quotes and code blocks. Raw HTML is preserved with native nodes and requires `{ allowHtml: true }` when rendering. GFM tables are normalized into FluxMark data tables. Footnotes and task-list extensions are not converted.
 
 ## Documentation
 

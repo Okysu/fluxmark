@@ -6,7 +6,7 @@ import { parseFluxMark, renderToHTML } from '../packages/fluxmark/dist/index.js'
 const fixture = `Reference
 =========
 
-A **strong** and *em* with \`code | ]\`, [ref][id], [title](https://e.test "T"), ![alt](https://e.test/a.png "I"), and <span class="x">html</span>.
+A **strong** and *em* with \`code | ]\`, [ref][id], [title](https://e.test "T"), [relative](docs/page.md), [anchor](#install), ![alt](https://e.test/a.png "I"), and <span class="x">html</span>.
 
 [id]: https://e.test/ref "R"
 
@@ -44,8 +44,22 @@ test('converts CommonMark structure, raw HTML and escapes into parseable FluxMar
   assert.match(html, /<span class="x">html<\/span>/);
   assert.match(html, /<div class="raw">/);
   assert.match(html, /<a href="https:\/\/e\.test\/ref" title="R">ref<\/a>/);
+  assert.match(html, /<a class="fx-link" href="docs\/page\.md">relative<\/a>/);
+  assert.match(html, /<a class="fx-link" href="#install">anchor<\/a>/);
   assert.match(html, /\*literal\*/);
   assert.match(html, /\| pipe/);
+});
+
+test('converts GFM tables, including nested tables', () => {
+  const source = '| A | B |\n| --- | --- |\n| 1 | 2 |\n\n> | C | D |\n> | --- | --- |\n> | 3 | 4 |';
+  const converter = new MarkdownToFluxMark();
+  const flux = converter.convert(source);
+  assert.equal(converter.tables, 2);
+  const html = renderToHTML(parseFluxMark(flux), { allowHtml: true });
+  assert.match(html, /<th scope="col">A<\/th>/);
+  assert.match(html, /<td data-column="B">2<\/td>/);
+  assert.match(html, /<blockquote class="fx-callout fx-callout-quote"/);
+  assert.match(html, /<th scope="col">C<\/th>/);
 });
 
 test('escapes raw HTML by default', () => {

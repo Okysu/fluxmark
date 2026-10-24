@@ -142,15 +142,15 @@ Ordered lists use numbers followed by a period. Segmented numbers express nestin
 
 ### Task items
 
-Tasks use an asterisk list marker and a state box. The state character can be a space, `x`, or `X`:
+Tasks use a `-`, `+`, or `*` list marker and a state box. The state character can be a space, `x`, or `X`:
 
 ```text live
-* [ ] Pending
-* [x] Done
+- [ ] Pending
++ [x] Done
 * [X] Also done
 ```
 
-A regular `- [ ]` item is an unordered list item, not a task. In the AST, `ListItem.checked` is `null` for a regular item and `false` or `true` for a task. `taskMarkerOffset` points at the state character in the source, which allows an editor to update the task without reformatting the document. See [task toggling](/guide/getting-started#toggle-task-state).
+In the AST, `ListItem.checked` is `null` for a regular item and `false` or `true` for a task. `taskMarkerOffset` points at the state character in the source, which allows an editor to update the task without reformatting the document. See [task toggling](/guide/getting-started#toggle-task-state).
 
 ### Horizontal rules
 
@@ -320,3 +320,5 @@ An editor can use these fields to locate diagnostics, synchronize a preview sele
 Inline scanning precomputes code spans, bracket pairs, and delimiter pairs. Each input character participates in a constant number of linear passes, and a failed match does not restart a scan over the remaining suffix. Block parsing advances through physical lines, and AST walking visits nodes depth first.
 
 Plugins can add their own regular expressions, recursive scans, repeated AST walks, and HTML serialization; those costs are separate. Untrusted plugins should not be treated as sandboxed code.
+
+Block nesting is capped at 256 levels by default to prevent stack exhaustion. Deeper content is skipped with a parse warning; set `maxBlockDepth` in parser options when a trusted document needs a different limit.

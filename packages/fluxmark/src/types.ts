@@ -281,6 +281,8 @@ export interface FluxParserOptions {
   blockRules?: FluxBlockRule[];
   pipeModifiers?: Record<string, FluxPipeModifier>;
   calloutVariants?: string[];
+  /** Maximum nested block depth before remaining content is skipped with a warning. Defaults to 256. */
+  maxBlockDepth?: number;
   onIssue?: (issue: FluxParseIssue) => void;
 }
 

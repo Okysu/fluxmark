@@ -2,24 +2,7 @@ import MarkdownIt from 'markdown-it';
 
 const markdown = new MarkdownIt({ html: true });
 
-const SAFE_CHARACTERS = new Map([
-  ['*', '∗'],
-  ['_', '＿'],
-  ['=', '＝'],
-  ['~', '～'],
-  ['[', '［'],
-  [']', '］'],
-  ['|', '｜'],
-  ['`', 'ˋ'],
-  ['<', '‹'],
-  ['>', '›'],
-  ['\\', '＼'],
-  ['#', '＃'],
-  ['@', '＠'],
-  ['$', '＄'],
-  ['-', '‐'],
-  ['+', '＋'],
-]);
+
 
 const INLINE_SPACE = ' ';
 
@@ -35,17 +18,77 @@ function stripNonContent(source) {
 }
 
 function sanitizeText(value) {
+  return value.replace(/\s+/g, ' ');
+}
+
+function escapeMarkdownText(value) {
+  return value
+    .replace(/[\\`*_[\]<>|]/g, '\\$&')
+    .replace(/!(?=\[)/g, '\\!');
+}
+
+function escapeFluxText(value) {
   let output = '';
-  for (const character of value.replace(/\s+/g, ' ')) {
-    output += SAFE_CHARACTERS.get(character) ?? character;
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index];
+    if ('\\[]|*_=~`'.includes(character)) {
+      output += `\\${character}`;
+    } else if (character === '!' && /[<[]/.test(value[index + 1] ?? '')) {
+      output += '\\!';
+    } else {
+      output += character;
+    }
   }
   return output;
+}
+
+function escapePipeContent(value) {
+  return value
+    .replace(/\\/g, '\\\\')
+    .replace(/\[/g, '\\[')
+    .replace(/\]/g, '\\]')
+    .replace(/\|/g, '\\|');
+}
+
+function markdownCode(value) {
+  const runs = value.match(/`+/g) ?? [];
+  const longest = runs.reduce((length, run) => Math.max(length, run.length), 0);
+  const fence = '`'.repeat(longest + 1);
+  const pad = value.startsWith('`') || value.endsWith('`') || value.startsWith(' ') || value.endsWith(' ');
+  return `${fence}${pad ? ` ${value} ` : value}${fence}`;
+}
+
+function fluxLink(value) {
+  if (
+    /^(?:https?:\/\/|mailto:)/i.test(value) ||
+    /^[#\/.]/.test(value) ||
+    /^[^\s]+\/[^\s]+/.test(value) ||
+    /^[^\s]+\.[a-z0-9]+(?:[#?].*)?$/i.test(value)
+  ) {
+    return value;
+  }
+  return `url:${value}`;
+}
+
+function protectBlockStart(line, dialect) {
+  if (dialect === 'md') {
+    if (/^(?:#|>|```|~~~|[-+*][ \t]|\d+[.)][ \t]|^-{3,}[ \t]*$)/.test(line)) {
+      return `\\${line}`;
+    }
+    return line;
+  }
+  if (/^(?:#|>|\$|@|!html(?:[ \t]|$)|[-+*][ \t]|\d+[.)][ \t]|^-{3,}[ \t]*$)/.test(line)) {
+    return `\\${line}`;
+  }
+  return line;
 }
 
 function normalizeHref(value) {
   if (typeof value !== 'string') return null;
   const href = value.trim();
-  if (!/^(?:https?:\/\/|mailto:)/i.test(href)) return null;
+  if (href.length === 0 || /[\u0000-\u0020\u007f]/.test(href)) return null;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(href) && !/^(?:https?:\/\/|mailto:)/i.test(href)) return null;
+  if (href.startsWith('//') || href.startsWith('\\')) return null;
   return href.replace(/[<>()\s,|]/g, (character) => encodeURIComponent(character));
 }
 
@@ -291,10 +334,10 @@ function inlineMarkdown(runs) {
     .map((run) => {
       if (run.html) return run.text;
       if (run.image) {
-        return run.href === null ? run.text : `![${run.text}](<${run.href}>)`;
+        const alt = escapeMarkdownText(run.text);
+        return run.href === null ? alt : `![${alt}](<${run.href}>)`;
       }
-      let value = run.text;
-      if (run.code) value = `\`${value}\``;
+      let value = run.code ? markdownCode(run.text) : escapeMarkdownText(run.text);
       if (run.bold) value = `**${value}**`;
       if (run.italic) value = `_${value}_`;
       if (run.strike) value = `~~${value}~~`;
@@ -309,23 +352,23 @@ function inlineFluxMark(runs) {
     .map((run) => {
       if (run.html) return `!${run.text}`;
       if (run.image) {
-        if (run.href === null) return run.text;
-        return run.text.length > 0 ? `![${run.href}|${run.text}]` : `![${run.href}]`;
+        if (run.href === null) return escapeFluxText(run.text);
+        return run.text.length > 0
+          ? `![${run.href}|${escapePipeContent(run.text)}]`
+          : `![${run.href}]`;
       }
+      if (run.code) return `[${escapePipeContent(run.text)}|c]`;
+      const value = escapeFluxText(run.text);
       const styles = [];
       if (run.bold) styles.push('b');
       if (run.italic) styles.push('i');
       if (run.strike) styles.push('s');
-      if (run.code) styles.push('c');
-      if (run.href !== null) styles.push(run.href);
-      if (styles.length === 0) return run.text;
-      if (run.code && styles.length === 1) return `\`${run.text}\``;
-      if (!run.code && run.href === null) {
-        if (run.bold && !run.italic && !run.strike) return `*${run.text}*`;
-        if (run.italic && !run.bold && !run.strike) return `_${run.text}_`;
-        if (run.strike && !run.bold && !run.italic) return `~${run.text}~`;
-      }
-      return `[${run.text}|${styles.join(',')}]`;
+      if (run.href !== null) styles.push(fluxLink(run.href));
+      if (styles.length === 0) return value;
+      if (run.href === null && run.bold && !run.italic && !run.strike) return `*${value}*`;
+      if (run.href === null && run.italic && !run.bold && !run.strike) return `_${value}_`;
+      if (run.href === null && run.strike && !run.bold && !run.italic) return `~${value}~`;
+      return `[${value}|${styles.join(',')}]`;
     })
     .join('');
 }
@@ -359,7 +402,9 @@ function renderBlocks(blocks, dialect, depth = 0) {
       lines.push(`${indent}${'#'.repeat(block.level)} ${inline(block.runs)}`);
     } else if (block.type === 'paragraph') {
       const text = inline(block.runs).trim();
-      if (text.length > 0) lines.push(`${indent}${text}`);
+      if (text.length > 0) {
+        for (const line of text.split('\n')) lines.push(`${indent}${protectBlockStart(line, dialect)}`);
+      }
     } else if (block.type === 'hr') {
       lines.push(`${indent}---`);
     } else if (block.type === 'code') {

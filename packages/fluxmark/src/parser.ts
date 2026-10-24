@@ -100,6 +100,12 @@ function stripIndent(raw: string, width: number): string {
   return raw.slice(index);
 }
 
+function isEscapedAt(input: string, index: number): boolean {
+  let count = 0;
+  for (let cursor = index - 1; cursor >= 0 && input[cursor] === '\\'; cursor -= 1) count += 1;
+  return count % 2 === 1;
+}
+
 function splitTableRecord(input: string): string[] {
   const segments: string[] = [];
   let start = 0;
@@ -113,7 +119,7 @@ function splitTableRecord(input: string): string[] {
       bracketDepth += 1;
     } else if (!inCode && character === ']' && bracketDepth > 0) {
       bracketDepth -= 1;
-    } else if (!inCode && bracketDepth === 0 && character === '|') {
+    } else if (!inCode && bracketDepth === 0 && character === '|' && !isEscapedAt(input, index)) {
       segments.push(input.slice(start, index));
       start = index + 1;
     }
@@ -131,7 +137,7 @@ export function toggleTaskInSource(
   const lines = tokenizeFluxLines(source);
   const target = lines[line - 1];
   if (target === undefined) return source;
-  const match = /^\*[ \t]+\[([ xX])\]/.exec(target.content);
+  const match = /^[-+*][ \t]+\[([ xX])\]/.exec(target.content);
   if (match === null) return source;
   const bracket = target.content.indexOf('[', 1);
   if (bracket < 0) return source;
@@ -145,8 +151,10 @@ export class FluxMarkParser {
   private readonly inlineParser: FluxInlineParser;
   private readonly onIssue: ((issue: FluxParseIssue) => void) | undefined;
   private readonly calloutVariants: Set<string>;
+  private readonly maxBlockDepth: number;
   private source = '';
   private lines: FluxSourceLine[] = [];
+  private blockDepth = 0;
   private index = 0;
   private issues: FluxParseIssue[] = [];
 
@@ -162,6 +170,7 @@ export class FluxMarkParser {
       ...DEFAULT_CALLOUT_VARIANTS,
       ...(options.calloutVariants ?? []).map((variant) => variant.toLowerCase()),
     ]);
+    this.maxBlockDepth = Math.max(16, options.maxBlockDepth ?? 256);
     this.registeredCalloutVariants = this.calloutVariants;
   }
 
@@ -183,6 +192,28 @@ export class FluxMarkParser {
   }
 
   private parseBlocks(parentIndent: number, sectionDepth: number): FluxBlockNode[] {
+    if (this.blockDepth >= this.maxBlockDepth) {
+      const line = this.lines[this.index];
+      if (line !== undefined) {
+        this.warn(line, 'Maximum block nesting depth exceeded; nested content skipped.');
+      }
+      while (this.index < this.lines.length) {
+        const candidate = this.lines[this.index];
+        if (candidate === undefined) break;
+        if (!isBlank(candidate) && candidate.indent <= parentIndent) break;
+        this.index += 1;
+      }
+      return [];
+    }
+    this.blockDepth += 1;
+    try {
+      return this.parseBlocksInner(parentIndent, sectionDepth);
+    } finally {
+      this.blockDepth -= 1;
+    }
+  }
+
+  private parseBlocksInner(parentIndent: number, sectionDepth: number): FluxBlockNode[] {
     const children: FluxBlockNode[] = [];
     while (this.index < this.lines.length) {
       const line = this.lines[this.index];
@@ -580,13 +611,13 @@ export class FluxMarkParser {
 
   private matchListMarker(line: FluxSourceLine): ListMarker | null {
     const content = line.content;
-    const task = /^\*[ \t]+\[([ xX])\][ \t]+(.*)$/.exec(content);
+    const task = /^[-+*][ \t]+\[([ xX])\][ \t]+(.*)$/.exec(content);
     if (task !== null) {
       const bracket = content.indexOf('[', 1);
       return {
         ordered: false,
         depth: 1,
-        marker: '*',
+        marker: content[0] ?? '*',
         content: task[2] ?? '',
         ordinal: null,
         checked: (task[1] ?? ' ').toLowerCase() === 'x',
@@ -594,7 +625,7 @@ export class FluxMarkParser {
       };
     }
 
-    const unordered = /^(-+|\*)[ \t]+(.*)$/.exec(content);
+    const unordered = /^(-+|\+|\*)[ \t]+(.*)$/.exec(content);
     if (unordered !== null) {
       const marker = unordered[1] ?? '-';
       return {

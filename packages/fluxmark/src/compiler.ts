@@ -21,6 +21,7 @@ export class FluxMark {
   private readonly blockRules: FluxBlockRule[];
   private readonly pipeModifiers: Record<string, FluxPipeModifier>;
   private readonly calloutVariants: string[];
+  private readonly maxBlockDepth: number;
   private readonly transforms: FluxASTTransform[] = [];
   private readonly htmlOverrides: FluxHtmlRendererOverrides = {};
   private readonly issueHandler: ((issue: FluxParseIssue) => void) | undefined;
@@ -29,6 +30,7 @@ export class FluxMark {
     this.blockRules = [...(options.blockRules ?? [])];
     this.pipeModifiers = { ...(options.pipeModifiers ?? {}) };
     this.calloutVariants = [...(options.calloutVariants ?? [])];
+    this.maxBlockDepth = options.maxBlockDepth ?? 256;
     this.issueHandler = options.onIssue;
     for (const plugin of options.plugins ?? []) this.register(plugin);
   }
@@ -62,6 +64,7 @@ export class FluxMark {
       blockRules: [...this.blockRules],
       pipeModifiers: { ...this.pipeModifiers },
       calloutVariants: [...this.calloutVariants],
+      maxBlockDepth: this.maxBlockDepth,
     };
     if (this.issueHandler !== undefined) options.onIssue = this.issueHandler;
     return new FluxMarkParser(options);

@@ -142,15 +142,15 @@ $ ts
 
 ### 任务项
 
-任务使用星号列表标记和状态框，状态字符只能是空格、`x` 或 `X`：
+任务使用 `-`、`+` 或 `*` 列表标记和状态框，状态字符只能是空格、`x` 或 `X`：
 
 ```text live
-* [ ] 待办
-* [x] 已完成
+- [ ] 待办
++ [x] 已完成
 * [X] 同样表示已完成
 ```
 
-普通 `- [ ]` 是普通无序列表项，不是任务语法。AST 中，`ListItem.checked` 对普通项目为 `null`，对未选和已选任务分别为 `false`、`true`。`taskMarkerOffset` 指向源码中的状态字符，便于精确切换任务而不重排文档。参见[快速上手](/zh/guide/getting-started#切换任务状态)。
+AST 中，`ListItem.checked` 对普通项目为 `null`，对未选和已选任务分别为 `false`、`true`。`taskMarkerOffset` 指向源码中的状态字符，便于精确切换任务而不重排文档。参见[快速上手](/zh/guide/getting-started#切换任务状态)。
 
 ### 分隔线
 

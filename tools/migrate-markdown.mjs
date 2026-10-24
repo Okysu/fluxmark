@@ -3,8 +3,10 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { Parser } from 'commonmark';
+import MarkdownIt from 'markdown-it';
 
 const parser = new Parser();
+const markdown = new MarkdownIt({ html: true });
 const TABS = '\t';
 
 function escapeAttribute(value) {
@@ -45,6 +47,20 @@ function safeDestination(value) {
     .replaceAll(']', '%5D');
 }
 
+function fluxDestination(value) {
+  const encoded = safeDestination(value);
+  if (
+    /^(?:https?:\/\/|mailto:|tel:|#)/i.test(encoded) ||
+    /^\/(?!\/)/.test(encoded) ||
+    /^\.{1,2}\//.test(encoded) ||
+    /^[^\s]+\/[^\s]+/.test(encoded) ||
+    /^[^\s]+\.[a-z0-9]+(?:[#?].*)?$/i.test(encoded)
+  ) {
+    return encoded;
+  }
+  return `url:${encoded}`;
+}
+
 function protectBlockStart(line) {
   if (/^(?:#|>|\$|@)(?:[ \t]|$)/.test(line)) return `\\${line}`;
   if (/^!html(?:[ \t]|$)/.test(line)) return `\\${line}`;
@@ -58,13 +74,85 @@ export class MarkdownToFluxMark {
     this.rawHtmlBlocks = 0;
     this.rawHtmlInline = 0;
     this.linksWithTitle = 0;
+    this.tables = 0;
   }
 
-  convert(markdown) {
-    const document = parser.parse(markdown);
-    const lines = this.renderBlocks(document.firstChild, 0, 0);
-    return `${lines.join('\n').replace(/\n{3,}/g, '\n\n').trimEnd()}\n`;
+  convert(source) {
+    const { markdown: prepared, tables } = this.extractTables(source);
+    const document = parser.parse(prepared);
+    let output = this.renderBlocks(document.firstChild, 0, 0).join('\n');
+    for (const table of tables) {
+      const placeholder = table.placeholder;
+      const pattern = new RegExp(`^([ \\t]*)${placeholder}$`, 'm');
+      output = output.replace(pattern, (_match, indent) => {
+        const lines = [`${indent}@`];
+        lines.push(`${indent}${TABS}- ${table.headers.join(' | ')}`);
+        for (const row of table.rows) {
+          lines.push(`${indent}${TABS}- ${row.join(' | ')}`);
+        }
+        return lines.join('\n');
+      });
+    }
+    return `${output.replace(/\n{3,}/g, '\n\n').trimEnd()}\n`;
   }
+
+  extractTables(source) {
+    const tokens = markdown.parse(source, {});
+    const tables = [];
+    for (let index = 0; index < tokens.length; index += 1) {
+      const token = tokens[index];
+      if (token.type !== 'table_open' || token.map === null) continue;
+      const headers = [];
+      const rows = [];
+      let currentRow = [];
+      let inHeader = false;
+      for (let cursor = index + 1; cursor < tokens.length; cursor += 1) {
+        const current = tokens[cursor];
+        if (current.type === 'table_close') break;
+        if (current.type === 'thead_open') {
+          inHeader = true;
+        } else if (current.type === 'thead_close') {
+          inHeader = false;
+        } else if (current.type === 'tr_open') {
+          currentRow = [];
+        } else if (current.type === 'th_open' || current.type === 'td_open') {
+          const inline = tokens[cursor + 1];
+          const value = inline?.type === 'inline' ? this.renderCell(inline.content) : '';
+          if (current.type === 'th_open') headers.push(value);
+          else currentRow.push(value);
+        } else if (current.type === 'tr_close' && !inHeader && currentRow.length > 0) {
+          rows.push(currentRow);
+          currentRow = [];
+        }
+      }
+      this.tables += 1;
+      tables.push({
+        start: token.map[0],
+        end: token.map[1],
+        placeholder: `FLUXTABLE${tables.length}`,
+        headers,
+        rows,
+      });
+    }
+    if (tables.length === 0) return { markdown: source, tables };
+
+    const lines = source.split('\n');
+    for (const table of [...tables].sort((left, right) => right.start - left.start)) {
+      const line = lines[table.start] ?? '';
+      const pipe = line.indexOf('|');
+      const prefix = pipe >= 0 ? line.slice(0, pipe) : '';
+      const separator = prefix.includes('>') ? [] : [''];
+      lines.splice(table.start, table.end - table.start, ...separator, `${prefix}${table.placeholder}`, '');
+    }
+    return { markdown: lines.join('\n'), tables };
+  }
+
+  renderCell(source) {
+    const document = parser.parse(source);
+    const paragraph = document.firstChild;
+    return paragraph === null ? '' : this.renderInline(paragraph.firstChild).trim();
+  }
+
 
   renderBlocks(first, depth, sectionDepth) {
     const blocks = [];
@@ -221,14 +309,14 @@ export class MarkdownToFluxMark {
     const plainLabel = this.inlinePlainText(node.firstChild);
     const hasFormatting = this.hasFormatting(node.firstChild);
     const title = node.title ?? '';
-    if (title.length > 0 || hasFormatting) {
+    if (title.length > 0 || hasFormatting || node.destination === '') {
       if (title.length > 0) this.linksWithTitle += 1;
       const titleAttribute = title.length > 0
         ? ` title="${escapeAttribute(title)}"`
         : '';
       return `!<a href="${escapeAttribute(safeDestination(node.destination))}"${titleAttribute}>${label}!</a>`;
     }
-    return `[${escapePipeContent(plainLabel)}|${escapePipeContent(safeDestination(node.destination))}]`;
+    return `[${escapePipeContent(plainLabel)}|${escapePipeContent(fluxDestination(node.destination))}]`;
   }
 
   renderImage(node) {
@@ -298,8 +386,9 @@ async function main() {
       `  raw HTML blocks preserved: ${converter.rawHtmlBlocks}`,
       `  raw inline HTML preserved: ${converter.rawHtmlInline}`,
       `  links with title converted through raw HTML: ${converter.linksWithTitle}`,
+      `  GFM tables converted: ${converter.tables}`,
       '  Raw HTML output requires renderToHTML(..., { allowHtml: true }).',
-      '  GFM tables, footnotes and task-list extensions are not part of CommonMark.',
+      '  GFM task lists and footnotes are not converted.',
     ].join('\n'),
   );
 }

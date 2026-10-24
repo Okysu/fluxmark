@@ -9,9 +9,9 @@ The goal is not to claim that FluxMark is a drop-in Markdown replacement. It mea
 
 ## Corpus
 
-The benchmark uses 24 pinned public Markdown documents, about 141k words and 1.08 MB of normalized source.
+The benchmark uses 30 pinned public Markdown documents, about 146k words and 1.18 MB of normalized source.
 
-The **rich** corpus contains nine public README pages selected for dense links, badges and image references:
+The **rich** corpus contains fifteen public README pages selected for dense links, badges and image references:
 
 - `vuejs/core`
 - `vitejs/vite`
@@ -22,6 +22,12 @@ The **rich** corpus contains nine public README pages selected for dense links, 
 - `denoland/deno`
 - `facebook/react`
 - `microsoft/TypeScript`
+- `kubernetes/kubernetes`
+- `golang/go`
+- `rust-lang/rust`
+- `tauri-apps/tauri`
+- `pytorch/pytorch`
+- `huggingface/transformers`
 
 The **spec** corpus contains authoritative Markdown technical documents: a Rust RFC, a React RFC and a Kubernetes Enhancement Proposal.
 
@@ -29,7 +35,7 @@ The **prose** corpus contains six regular documentation chapters: Vue guide intr
 
 The **reference** corpus contains six large Node.js API pages covering `fs`, `errors`, `stream`, `http`, `path` and `buffer`.
 
-The **all** corpus combines all 24 sources.
+The **all** corpus combines all 30 sources.
 
 Every source is pinned to a commit in [`sources.mjs`](./sources.mjs), downloaded into `benchmarks/.cache`, and reused after the first run. The raw documents remain under their upstream licenses.
 
@@ -63,17 +69,17 @@ pnpm bench:update
 
 See [`RESULTS.md`](./RESULTS.md) for the complete environment, source-size table, all corpus results and pinned source links.
 
-On the recorded 24-document corpus:
+On the recorded 30-document corpus:
 
 | Corpus | Documents | Source characters | Full HTML render vs Markdown-it | vs marked |
 | --- | ---: | ---: | ---: | ---: |
-| Link- and media-rich READMEs | 9 | 1.29% fewer | 1.77× | 1.22× |
-| Authoritative technical specifications | 3 | 0.33% fewer | 1.23× | 1.32× |
-| Prose-heavy documentation | 6 | 0.58% fewer | 1.27× | 1.25× |
-| Large API and reference documents | 6 | 0.07% more | 1.30× | 1.16× |
-| All sources | 24 | 0.12% fewer | 1.37× | 1.20× |
+| Link- and media-rich READMEs | 15 | 1.58% fewer | 1.55× | 1.16× |
+| Authoritative technical specifications | 3 | 0.03% more | 1.11× | 1.19× |
+| Prose-heavy documentation | 6 | 1.55% fewer | 1.15× | 1.12× |
+| Large API and reference documents | 6 | 1.89% fewer | 1.16× | 1.13× |
+| All sources | 30 | 1.47% fewer | 1.24× | 1.11× |
 
-On the table-free prose subset, snarkdown is about 1.24× faster than FluxMark. It is a minimal renderer that does not implement GFM tables, so this is not a like-for-like feature comparison.
+On the table-free prose subset, FluxMark and snarkdown are essentially at parity. Snarkdown is a minimal renderer without GFM tables, so this is not a like-for-like feature comparison.
 
 Compact header tables declare column names once; sparse key-value tables remain available for irregular records. Raw HTML participates in the comparison. Code-heavy API references are effectively at parity in source size.
 

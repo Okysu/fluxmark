@@ -83,6 +83,7 @@ console.log(html)
 | `blockRules` | `FluxBlockRule[]` | Custom block rules |
 | `pipeModifiers` | `Record<string, FluxPipeModifier>` | Pipe modifier handlers |
 | `calloutVariants` | `string[]` | Additional callout variant names |
+| `maxBlockDepth` | `number` | Maximum nested block depth before content is skipped with a warning; defaults to 256 |
 | `onIssue` | `(issue: FluxParseIssue) => void` | Diagnostic callback |
 
 `FluxMarkOptions` extends these fields with `plugins?: FluxPluginDefinition[]`.

@@ -46,15 +46,15 @@ function percentile(values, fraction) {
   return sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * fraction))];
 }
 
-function countDataTables(value) {
+function countNodesOfType(value, type) {
   if (value === null || typeof value !== 'object') return 0;
   if (Array.isArray(value)) {
-    return value.reduce((sum, item) => sum + countDataTables(item), 0);
+    return value.reduce((sum, item) => sum + countNodesOfType(item, type), 0);
   }
-  let count = value.type === 'DataTable' ? 1 : 0;
+  let count = value.type === type ? 1 : 0;
   for (const child of Object.values(value)) {
     if (child === value) continue;
-    if (typeof child === 'object') count += countDataTables(child);
+    if (typeof child === 'object') count += countNodesOfType(child, type);
   }
   return count;
 }
@@ -155,10 +155,16 @@ for (const source of sources) {
         .join('; ')}`,
     );
   }
-  const parsedTables = countDataTables(fluxAst);
+  const parsedTables = countNodesOfType(fluxAst, 'DataTable');
   if (parsedTables !== stats.tables) {
     throw new Error(
       `${source.id} table mismatch: source ${stats.tables}, FluxMark AST ${parsedTables}`,
+    );
+  }
+  const parsedHtmlBlocks = countNodesOfType(fluxAst, 'RawHtml');
+  if (parsedHtmlBlocks !== stats.htmlBlocks) {
+    throw new Error(
+      `${source.id} raw HTML mismatch: source ${stats.htmlBlocks}, FluxMark AST ${parsedHtmlBlocks}`,
     );
   }
   loaded.push({
@@ -333,7 +339,7 @@ Public Markdown sources are normalized into a common semantic subset of headings
 
 Image references use native image syntax in both formats. Tables are retained; FluxMark uses a compact header row so column names appear once. Raw HTML is retained as native raw HTML nodes and rendered with allowHtml enabled on both sides. This is a compiler throughput benchmark, not a browser paint benchmark. Results depend on hardware, Node.js and package versions. The lightweight snarkdown parser is measured only on the table-free prose subset because it does not implement GFM tables.
 
-The **rich** corpus contains nine public README/media pages chosen for dense links and image references. The **spec** corpus contains three authoritative Markdown technical specifications (Rust RFC, React RFC, Kubernetes KEP). The **prose** corpus contains six regular documentation chapters. The **reference** corpus adds six large Node.js API reference documents, including table-heavy pages. The **all** corpus combines all twenty-four sources.
+The **rich** corpus contains fifteen public README/media pages chosen for dense links and image references. The **spec** corpus contains three authoritative Markdown technical specifications (Rust RFC, React RFC, Kubernetes KEP). The **prose** corpus contains six regular documentation chapters. The **reference** corpus adds six large Node.js API reference documents, including table-heavy pages. The **all** corpus combines all thirty sources.
 
 ## Source size
 

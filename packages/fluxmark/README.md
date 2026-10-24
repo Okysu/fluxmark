@@ -21,9 +21,9 @@ FluxMark is not a Markdown compatibility layer. Its indentation-based blocks, pi
 
 ## Compact and fast
 
-On a reproducible 24-document public corpus of about 1 MB normalized Markdown, full parsing plus semantic HTML generation was about 1.37× faster than markdown-it and 1.20× faster than marked. On link-heavy READMEs the render advantage increased to about 1.8×.
+On a reproducible 30-document public corpus of about 1.18 MB normalized Markdown, full parsing plus semantic HTML generation was about 1.24× faster than markdown-it and 1.11× faster than marked. On link-heavy READMEs the render advantage increased to about 1.6×.
 
-Across the corpus, FluxMark used 0.12% fewer source characters. Compact header tables declare columns once, while sparse key-value tables remain available. Images and raw HTML use native nodes; raw HTML requires the explicit `allowHtml` renderer option.
+Across the corpus, FluxMark used 1.47% fewer source characters. Compact header tables declare columns once, while sparse key-value tables remain available. Images and raw HTML use native nodes; raw HTML requires the explicit `allowHtml` renderer option.
 
 See the [benchmark methodology and pinned public sources](https://github.com/Okysu/fluxmark/blob/main/benchmarks/RESULTS.md). Results depend on hardware and input shape, and the benchmark is not a DOM paint measurement.
 
