@@ -22,6 +22,15 @@ describe('FluxHtmlRenderer and compiler plugins', () => {
     expect(html).toContain('<span class="fx-badge">Stable</span>');
   });
 
+  it('only passes raw HTML through when explicitly allowed', () => {
+    const ast = parseFluxMarkDocument('!html\n  <div class="raw">unsafe</div>\n\nA !<span class="x">raw!</span> tag');
+    expect(toHTML(ast)).not.toContain('<div class="raw">');
+    expect(toHTML(ast)).toContain('&lt;div class=&quot;raw&quot;&gt;');
+    const trusted = new FluxHtmlRenderer({ allowHtml: true }).render(ast);
+    expect(trusted).toContain('<div class="raw">unsafe</div>');
+    expect(trusted).toContain('<span class="x">');
+  });
+
   it('escapes markup and blocks dangerous URL protocols', () => {
     const html = toHTML(parseFluxMarkDocument('[<img src=x onerror=alert(1)>|b]'));
     expect(html).not.toContain('<img');

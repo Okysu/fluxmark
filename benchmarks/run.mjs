@@ -192,7 +192,7 @@ for (const group of groups) {
   const fluxBytes = Buffer.byteLength(fluxMarkCorpus);
   const markdown = new MarkdownIt({ html: true });
   const fluxParser = new FluxMarkParser();
-  const fluxRenderer = new FluxHtmlRenderer();
+  const fluxRenderer = new FluxHtmlRenderer({ allowHtml: true });
 
   const engines = {
     FluxMark: {
@@ -331,7 +331,7 @@ Generated at ${results.generatedAt} with Node.js ${process.version} on ${results
 
 Public Markdown sources are normalized into a common semantic subset of headings, paragraphs, blockquotes, simple lists, fenced code, links, inline emphasis and image references. The same normalized block tree is serialized as Markdown and FluxMark. The benchmark measures parsing and full semantic HTML string rendering with Markdown-it, marked and FluxMark.
 
-Image references use native image syntax in both formats. Tables are retained; FluxMark uses a compact header row so column names appear once. Raw HTML is omitted from both sides because FluxMark deliberately has no raw HTML node and an equivalent rendering comparison is impossible. This is a compiler throughput benchmark, not a browser paint benchmark. Results depend on hardware, Node.js and package versions. The lightweight snarkdown parser is measured only on the table-free prose subset because it does not implement GFM tables.
+Image references use native image syntax in both formats. Tables are retained; FluxMark uses a compact header row so column names appear once. Raw HTML is retained as native raw HTML nodes and rendered with allowHtml enabled on both sides. This is a compiler throughput benchmark, not a browser paint benchmark. Results depend on hardware, Node.js and package versions. The lightweight snarkdown parser is measured only on the table-free prose subset because it does not implement GFM tables.
 
 The **rich** corpus contains nine public README/media pages chosen for dense links and image references. The **spec** corpus contains three authoritative Markdown technical specifications (Rust RFC, React RFC, Kubernetes KEP). The **prose** corpus contains six regular documentation chapters. The **reference** corpus adds six large Node.js API reference documents, including table-heavy pages. The **all** corpus combines all twenty-four sources.
 

@@ -20,6 +20,7 @@
     "build": "pnpm --filter fluxmark build && vitepress build docs",
     "build:docs": "vitepress build docs",
     "test": "pnpm --filter fluxmark test",
+    "test:migrate": "pnpm --filter fluxmark build && node --test tools/migrate-markdown.test.mjs",
     "test:coverage": "pnpm --filter fluxmark test:coverage",
     "bench": "pnpm --filter fluxmark build && node --expose-gc benchmarks/run.mjs",
     "bench:update": "pnpm --filter fluxmark build && node --expose-gc benchmarks/run.mjs --write",
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
+    "commonmark": "^0.31.2",
     "markdown-it": "^15.0.3",
     "marked": "^18.1.1",
     "snarkdown": "^2.0.0",

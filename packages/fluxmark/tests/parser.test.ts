@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { parseFluxMarkDocument, toggleTaskInSource } from '../src/parser';
 import { parseFluxInline } from '../src/inline';
-import type { FluxCallout, FluxCodeBlock, FluxDataTable, FluxList, FluxParagraph, FluxSection } from '../src/types';
+import type { FluxCallout, FluxCodeBlock, FluxDataTable, FluxList, FluxParagraph, FluxRawHtml, FluxSection } from '../src/types';
 
 describe('FluxMark block parser', () => {
   it('derives heading levels from section depth and supports explicit hashes', () => {
@@ -70,6 +70,19 @@ After`);
     const aligned = sameIndent.children[0] as FluxDataTable;
     expect(aligned.columns).toEqual(['A', 'B']);
     expect(aligned.rows[0]?.cells.B?.tokens[0]?.content).toBe('two');
+  });
+
+  it('preserves raw HTML blocks', () => {
+    const ast = parseFluxMarkDocument(`!html
+  <div class="callout">
+    <strong>Raw</strong>
+  </div>
+After`);
+    const raw = ast.children[0] as FluxRawHtml;
+    expect(raw.type).toBe('RawHtml');
+    expect(raw.content).toContain('<div class="callout">');
+    expect(raw.content).toContain('<strong>Raw</strong>');
+    expect(ast.children[1]?.type).toBe('Paragraph');
   });
 
   it('uses a header row for compact positional table records', () => {

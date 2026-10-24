@@ -64,6 +64,7 @@ function sameStyle(left, right) {
     left.strike === right.strike &&
     left.code === right.code &&
     left.image === right.image &&
+    left.html === right.html &&
     left.href === right.href
   );
 }
@@ -87,6 +88,7 @@ function parseInline(token, stats) {
     strike: active.strike > 0,
     code: false,
     image: false,
+    html: false,
     href: active.href,
   });
 
@@ -136,6 +138,7 @@ function parseInline(token, stats) {
         pushRun(runs, INLINE_SPACE, style());
       } else if (child.type === 'html_inline') {
         stats.inlineHtml += 1;
+        pushRun(runs, child.content, { ...style(), html: true });
       } else if (child.children !== null) {
         walk(child.children);
       }
@@ -257,6 +260,7 @@ function parseBlocks(tokens, start, end, stats) {
       index = table.next;
     } else if (token.type === 'html_block') {
       stats.htmlBlocks += 1;
+      blocks.push({ type: 'html', content: token.content.replace(/\n$/, '') });
       index += 1;
     } else if (token.type === 'hr') {
       blocks.push({ type: 'hr' });
@@ -285,6 +289,7 @@ export function normalizeMarkdown(source) {
 function inlineMarkdown(runs) {
   return runs
     .map((run) => {
+      if (run.html) return run.text;
       if (run.image) {
         return run.href === null ? run.text : `![${run.text}](<${run.href}>)`;
       }
@@ -302,6 +307,7 @@ function inlineMarkdown(runs) {
 function inlineFluxMark(runs) {
   return runs
     .map((run) => {
+      if (run.html) return `!${run.text}`;
       if (run.image) {
         if (run.href === null) return run.text;
         return run.text.length > 0 ? `![${run.href}|${run.text}]` : `![${run.href}]`;
@@ -391,6 +397,15 @@ function renderBlocks(blocks, dialect, depth = 0) {
             const cells = headers.map((_header, index) => inline(row[index] ?? []).trim());
             lines.push(`${rowIndent}- ${cells.join(' | ')}`);
           }
+        }
+      }
+    } else if (block.type === 'html') {
+      if (dialect === 'md') {
+        for (const line of block.content.split('\n')) lines.push(`${indent}${line}`);
+      } else {
+        lines.push(`${indent}!html`);
+        for (const line of block.content.split('\n')) {
+          lines.push(line.length === 0 ? '' : `${indent}\t${line}`);
         }
       }
     } else if (block.type === 'quote') {

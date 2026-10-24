@@ -31,6 +31,14 @@ const STYLE_FOR_DELIMITER: Record<DelimiterSymbol, ActiveStyleFlag> = {
   '~': 'strike',
 };
 
+const ESCAPABLE = new Set('!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~');
+
+function isEscaped(input: string, index: number): boolean {
+  let count = 0;
+  for (let cursor = index - 1; cursor >= 0 && input[cursor] === '\\'; cursor -= 1) count += 1;
+  return count % 2 === 1;
+}
+
 const BUILT_IN_ALIASES: Record<string, keyof Pick<
   FluxInlineStyle,
   'bold' | 'italic' | 'underline' | 'strike' | 'mark' | 'code'
@@ -138,7 +146,7 @@ export class FluxInlineParser {
 
   public parse(input: string): FluxInlineToken[] {
     if (input.length === 0) return [];
-    if (!/[\[\]*_=~`\n!]/.test(input)) {
+    if (!/[\[\]*_=~`\n!\\]/.test(input)) {
       return [createFluxInlineToken('text', input)];
     }
 
@@ -153,6 +161,7 @@ export class FluxInlineParser {
       strike: 0,
     };
     let textStart = 0;
+    let pendingText = '';
     let index = 0;
 
     const currentStyle = (): FluxInlineStyle => {
@@ -165,11 +174,26 @@ export class FluxInlineParser {
     };
 
     const flushText = (end: number): void => {
-      if (end <= textStart) return;
-      tokens.push(createFluxInlineToken('text', input.slice(textStart, end), currentStyle()));
+      const chunk = pendingText + input.slice(textStart, end);
+      pendingText = '';
+      if (chunk.length === 0) return;
+      tokens.push(createFluxInlineToken('text', chunk, currentStyle()));
     };
 
     while (index < input.length) {
+      if (input[index] === '!' && input[index + 1] === '<') {
+        const htmlEnd = this.findRawHtmlEnd(input, index + 1);
+        if (htmlEnd >= 0) {
+          flushText(index);
+          tokens.push(
+            createFluxInlineToken('html', input.slice(index + 1, htmlEnd + 1), currentStyle()),
+          );
+          index = htmlEnd + 1;
+          textStart = index;
+          continue;
+        }
+      }
+
       if (input[index] === '!' && input[index + 1] === '[') {
         const imageEnd = bracketPairs.get(index + 1);
         if (imageEnd !== undefined) {
@@ -204,11 +228,19 @@ export class FluxInlineParser {
         continue;
       }
 
+      if (input[index] === '\\' && input[index + 1] !== undefined && ESCAPABLE.has(input[index + 1]!)) {
+        flushText(index);
+        pendingText += input[index + 1];
+        index += 2;
+        textStart = index;
+        continue;
+      }
+
       const pipePosition = pipePositions.get(index);
       const bracketEnd = bracketPairs.get(index);
       if (pipePosition !== undefined && bracketEnd !== undefined) {
         flushText(index);
-        const rawContent = input.slice(index + 1, pipePosition);
+        const rawContent = this.unescapeInline(input.slice(index + 1, pipePosition));
         const rawModifiers = input.slice(pipePosition + 1, bracketEnd);
         const style = currentStyle();
         const attributes: Record<string, string> = {};
@@ -245,11 +277,54 @@ export class FluxInlineParser {
     return tokens;
   }
 
+  private unescapeInline(value: string): string {
+    let result = '';
+    for (let index = 0; index < value.length; index += 1) {
+      const character = value[index];
+      if (character === '\\' && value[index + 1] !== undefined && ESCAPABLE.has(value[index + 1]!)) {
+        result += value[index + 1];
+        index += 1;
+      } else {
+        result += character;
+      }
+    }
+    return result;
+  }
+
+  private findRawHtmlEnd(input: string, start: number): number {
+    if (input.startsWith('<!--', start)) {
+      const end = input.indexOf('-->', start + 4);
+      return end < 0 ? -1 : end + 2;
+    }
+    if (input.startsWith('<![CDATA[', start)) {
+      const end = input.indexOf(']]>', start + 9);
+      return end < 0 ? -1 : end + 2;
+    }
+    if (input.startsWith('<?', start)) {
+      const end = input.indexOf('?>', start + 2);
+      return end < 0 ? -1 : end + 1;
+    }
+    let quote: string | null = null;
+    for (let index = start; index < input.length; index += 1) {
+      const character = input[index];
+      if (quote !== null) {
+        if (character === quote) quote = null;
+        continue;
+      }
+      if (character === '"' || character === "'") {
+        quote = character;
+      } else if (character === '>') {
+        return index;
+      }
+    }
+    return -1;
+  }
+
   private findCodePairs(input: string): Map<number, number> {
     const pairs = new Map<number, number>();
     let opening = -1;
     for (let index = 0; index < input.length; index += 1) {
-      if (input[index] !== '`') continue;
+      if (input[index] !== '`' || isEscaped(input, index)) continue;
       if (opening < 0) {
         opening = index;
       } else {
@@ -276,6 +351,10 @@ export class FluxInlineParser {
         continue;
       }
       const character = input[index];
+      if (isEscaped(input, index)) {
+        index += 1;
+        continue;
+      }
       if (character === '[') {
         stack.push({ start: index, firstPipe: null });
       } else if (character === '|' && stack.length > 0) {
@@ -325,6 +404,10 @@ export class FluxInlineParser {
 
       const character = input[index];
       if (character !== '*' && character !== '_' && character !== '=' && character !== '~') {
+        index += 1;
+        continue;
+      }
+      if (isEscaped(input, index)) {
         index += 1;
         continue;
       }

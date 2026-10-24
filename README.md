@@ -19,22 +19,23 @@ FluxMark is a lightweight TypeScript compiler for structured documents. It turns
 - **Extensible at every stage.** Add block rules, pipe modifiers, AST transforms and HTML renderers through one plugin interface.
 - **Accessible output.** Compile to clean semantic HTML with strict escaping, URL allowlisting and a polished default stylesheet.
 - **First-class images.** Use `![src|alt]` with optional alternative text, lazy loading by default and the same URL safety policy as links.
+- **Raw HTML when required.** Explicit `!html` blocks and `!<tag>` inline nodes are escaped by default and enabled per renderer with `allowHtml`.
 - **Interactive by default.** Task checkboxes and live Playground examples share the same compiler and can update their original source.
 - **Bilingual documentation.** Full English and Chinese guides, API reference and a live Playground built with VitePress.
 
 ## Compact source, faster rendering
 
-We benchmark 24 pinned public Markdown documents: about 140k words and 1.04 MB of normalized source spanning link-heavy READMEs, technical specifications, editorial documentation and large API references.
+We benchmark 24 pinned public Markdown documents: about 141k words and 1.08 MB of normalized source spanning link-heavy READMEs, technical specifications, editorial documentation and large API references.
 
 | Public corpus | Documents | Source characters | HTML render vs markdown-it | vs marked |
 | --- | ---: | ---: | ---: | ---: |
-| Link- and media-rich READMEs | 9 | 2.77% fewer | 2.23× | 1.53× |
-| Authoritative technical specifications | 3 | 0.34% fewer | 1.35× | 1.46× |
-| Prose-heavy documentation | 6 | 0.75% fewer | 1.43× | 1.38× |
-| Large API and reference docs | 6 | 0.04% fewer | 1.40× | 1.37× |
-| All sources | 24 | 0.23% fewer | 1.44× | 1.31× |
+| Link- and media-rich READMEs | 9 | 1.29% fewer | 1.77× | 1.22× |
+| Authoritative technical specifications | 3 | 0.33% fewer | 1.23× | 1.32× |
+| Prose-heavy documentation | 6 | 0.58% fewer | 1.27× | 1.25× |
+| Large API and reference docs | 6 | 0.07% more | 1.30× | 1.16× |
+| All sources | 24 | 0.12% fewer | 1.37× | 1.20× |
 
-Every corpus now uses fewer source characters. Compact tables declare columns once in a header row; links, emphasis and block markers stay short, while sparse key-value tables remain available for irregular records. Rendering is faster across every corpus, including 1.23× faster than snarkdown on the table-free prose subset. Images use native image nodes. Raw HTML is excluded because an equivalent render is impossible. See [the full methodology, statistics and pinned sources](./benchmarks/RESULTS.md).
+Most corpora use fewer source characters. Compact tables declare columns once; links, emphasis and block markers stay short. Large code-heavy API references are effectively at parity. Rendering is faster across every corpus than markdown-it and marked, but the minimal snarkdown parser is still about 1.24× faster on prose because it implements far less syntax. Images and raw HTML use native nodes; raw HTML requires explicit `allowHtml`. See [the full methodology, statistics and pinned sources](./benchmarks/RESULTS.md).
 
 ## Install
 
@@ -182,7 +183,7 @@ An experimental converter is included for moving existing Markdown content into 
 pnpm migrate path/to/article.md --output article.fx
 ```
 
-It converts headings, paragraphs, common inline styles, links, images, lists, tables and code fences. Raw HTML blocks are reported and omitted because FluxMark intentionally does not accept raw HTML. Review generated documents before publishing; the converter normalizes markup rather than promising byte-for-byte fidelity.
+It converts complete CommonMark 0.31.2 block and inline structure, including reference links, raw HTML, escapes, images, nested lists, block quotes and code blocks. Raw HTML is preserved with native nodes and requires `{ allowHtml: true }` when rendering. GFM tables, footnotes and task-list extensions are outside CommonMark and are not converted.
 
 ## Documentation
 

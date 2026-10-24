@@ -15,6 +15,7 @@ import type {
   FluxParagraph,
   FluxParserOptions,
   FluxParseIssue,
+  FluxRawHtml,
   FluxSection,
   FluxSourceLine,
 } from './types';
@@ -249,6 +250,7 @@ export class FluxMarkParser {
     if (/^>(?:[ \t]+.*)?$/.test(content)) return this.parseCallout(line, sectionDepth);
     if (/^\$(?:[ \t]+\S+)?[ \t]*$/.test(content)) return this.parseCodeBlock(line);
     if (/^@(?:[ \t]+.*)?$/.test(content)) return this.parseDataTable(line);
+    if (/^!html[ \t]*$/.test(content)) return this.parseRawHtml(line);
     if (/^-{3,}[ \t]*$/.test(content)) return this.parseHorizontalRule(line);
 
     const listMarker = this.matchListMarker(line);
@@ -470,6 +472,35 @@ export class FluxMarkParser {
     }
   }
 
+  private parseRawHtml(line: FluxSourceLine): FluxRawHtml {
+    const contentLines: FluxSourceLine[] = [];
+    let minimumIndent = Number.POSITIVE_INFINITY;
+    this.index += 1;
+
+    while (this.index < this.lines.length) {
+      const candidate = this.lines[this.index];
+      if (candidate === undefined) break;
+      if (!isBlank(candidate) && candidate.indent <= line.indent) break;
+      if (!isBlank(candidate)) minimumIndent = Math.min(minimumIndent, candidate.indent);
+      contentLines.push(candidate);
+      this.index += 1;
+    }
+
+    if (!Number.isFinite(minimumIndent)) minimumIndent = line.indent + 1;
+    const content = contentLines
+      .map((htmlLine) =>
+        isBlank(htmlLine) ? '' : stripIndent(htmlLine.raw, minimumIndent),
+      )
+      .join('\n');
+    const node: FluxRawHtml = {
+      ...createFluxNodeBase(line),
+      type: 'RawHtml',
+      content,
+    };
+    this.finishRange(node);
+    return node;
+  }
+
   private parseHorizontalRule(line: FluxSourceLine): FluxHorizontalRule {
     this.index += 1;
     return { ...createFluxNodeBase(line), type: 'HorizontalRule' };
@@ -621,6 +652,7 @@ export class FluxMarkParser {
       /^>(?:[ \t]+.*)?$/.test(line.content) ||
       /^\$(?:[ \t]+\S+)?[ \t]*$/.test(line.content) ||
       /^@(?:[ \t]+.*)?$/.test(line.content) ||
+      /^!html[ \t]*$/.test(line.content) ||
       /^-{3,}[ \t]*$/.test(line.content) ||
       this.matchListMarker(line) !== null
     );

@@ -9,7 +9,7 @@ The goal is not to claim that FluxMark is a drop-in Markdown replacement. It mea
 
 ## Corpus
 
-The benchmark uses 24 pinned public Markdown documents, about 140k words and 1.04 MB of normalized source.
+The benchmark uses 24 pinned public Markdown documents, about 141k words and 1.08 MB of normalized source.
 
 The **rich** corpus contains nine public README pages selected for dense links, badges and image references:
 
@@ -43,7 +43,7 @@ Markdown-it's token stream is converted into a common block model for headings, 
 - Markdown tables become FluxMark compact header tables, with column names declared once and positional value rows.
 - Ordered and unordered lists use physical indentation in FluxMark.
 - Image references use Markdown `![alt](src)` and FluxMark `![src|alt]`, preserving native image semantics.
-- Raw HTML is omitted from both sides because FluxMark deliberately has no raw HTML node and equivalent rendering is impossible.
+- Raw HTML is retained through FluxMark's raw HTML block and inline syntax, and rendered with `allowHtml: true` on both sides.
 
 Each engine is warmed up before measurement. Timings are the median of 11 samples after calibration, with GC exposed. The benchmark measures parse and full parse-plus-HTML-render time. It does not include browser layout, paint, hydration or network time. Snarkdown is measured on the table-free prose subset because it does not implement GFM tables.
 
@@ -67,14 +67,14 @@ On the recorded 24-document corpus:
 
 | Corpus | Documents | Source characters | Full HTML render vs Markdown-it | vs marked |
 | --- | ---: | ---: | ---: | ---: |
-| Link- and media-rich READMEs | 9 | 2.77% fewer | 2.23× | 1.53× |
-| Authoritative technical specifications | 3 | 0.34% fewer | 1.35× | 1.46× |
-| Prose-heavy documentation | 6 | 0.75% fewer | 1.43× | 1.38× |
-| Large API and reference documents | 6 | 0.04% fewer | 1.40× | 1.37× |
-| All sources | 24 | 0.23% fewer | 1.44× | 1.31× |
+| Link- and media-rich READMEs | 9 | 1.29% fewer | 1.77× | 1.22× |
+| Authoritative technical specifications | 3 | 0.33% fewer | 1.23× | 1.32× |
+| Prose-heavy documentation | 6 | 0.58% fewer | 1.27× | 1.25× |
+| Large API and reference documents | 6 | 0.07% more | 1.30× | 1.16× |
+| All sources | 24 | 0.12% fewer | 1.37× | 1.20× |
 
-On the table-free prose subset, FluxMark is also about 1.23× faster than snarkdown, a minimal Markdown renderer that does not implement GFM tables.
+On the table-free prose subset, snarkdown is about 1.24× faster than FluxMark. It is a minimal renderer that does not implement GFM tables, so this is not a like-for-like feature comparison.
 
-Source-length gains hold across all four corpora. Compact header tables declare column names once; sparse key-value tables remain available for irregular records. The rich subset and prose subset are small enough that startup overhead still matters. Snarkdown does not implement tables, so it is compared only on the table-free prose subset.
+Compact header tables declare column names once; sparse key-value tables remain available for irregular records. Raw HTML participates in the comparison. Code-heavy API references are effectively at parity in source size.
 
 Treat these as engineering signals, not universal claims. Re-run on your own hardware before quoting them externally.

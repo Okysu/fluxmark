@@ -236,7 +236,7 @@ A modifier starting with `?` sets a tooltip. The tooltip modifier absorbs all re
 [Docs|https://example.com/docs,?Open the documentation]
 ```
 
-Content inside a pipe expression is raw text and is not recursively parsed as another set of inline tokens. FluxMark does not use Markdown `[label](url)` links or raw HTML.
+Content inside a pipe expression is raw text and is not recursively parsed as another set of inline tokens. FluxMark does not use Markdown `[label](url)` links.
 
 ### Images
 
@@ -248,6 +248,41 @@ Images reuse the same bracket grammar, with the source first and an optional alt
 ```
 
 `![src]` is a valid decorative image with empty `alt`; `![src|alt]` adds an accessible description. The HTML renderer validates the source against the same URL policy, escapes the alternative text, and emits `loading="lazy" decoding="async"`. Invalid sources render as escaped fallback text instead of an image element. Markdown's `![alt](url)` syntax is not accepted.
+
+### Escapes
+
+A backslash escapes ASCII punctuation so it stays literal:
+
+```text live
+\*not bold\* and \[not a link\] and a \| literal pipe.
+```
+
+Escapes apply to `\`, `[`, `]`, `|`, `*`, `_`, `=`, `~`, backticks and the other ASCII punctuation characters. Inside code blocks and code spans, backslashes are preserved literally.
+
+### Raw HTML
+
+Raw HTML is represented explicitly instead of being silently passed through. Prefix an inline tag with `!`:
+
+```text
+Text with !<span class="accent">inline HTML!</span>.
+```
+
+A block starts with `!html`; its indented content is preserved verbatim:
+
+```text
+!html
+  <div class="callout">
+    <strong>Raw block</strong>
+  </div>
+```
+
+HTML is escaped by default. To emit it, opt in on the renderer:
+
+```ts
+renderToHTML(source, { allowHtml: true })
+```
+
+Only enable `allowHtml` for trusted content. Raw HTML bypasses normal escaping and must be sanitized before rendering untrusted input.
 
 ## Diagnostics and source locations
 

@@ -1,12 +1,12 @@
 # FluxMark benchmark results
 
-Generated at 2026-10-24T03:03:12.215Z with Node.js v24.19.0 on linux 7.0.0-38-generic, Intel(R) Core(TM) i7-14700KF. Samples: 11; exposed GC: yes.
+Generated at 2026-10-24T03:19:51.402Z with Node.js v24.19.0 on linux 7.0.0-38-generic, Intel(R) Core(TM) i7-14700KF. Samples: 11; exposed GC: yes.
 
 ## What is measured
 
 Public Markdown sources are normalized into a common semantic subset of headings, paragraphs, blockquotes, simple lists, fenced code, links, inline emphasis and image references. The same normalized block tree is serialized as Markdown and FluxMark. The benchmark measures parsing and full semantic HTML string rendering with Markdown-it, marked and FluxMark.
 
-Image references use native image syntax in both formats. Tables are retained; FluxMark uses a compact header row so column names appear once. Raw HTML is omitted from both sides because FluxMark deliberately has no raw HTML node and an equivalent rendering comparison is impossible. This is a compiler throughput benchmark, not a browser paint benchmark. Results depend on hardware, Node.js and package versions. The lightweight snarkdown parser is measured only on the table-free prose subset because it does not implement GFM tables.
+Image references use native image syntax in both formats. Tables are retained; FluxMark uses a compact header row so column names appear once. Raw HTML is retained as native raw HTML nodes and rendered with allowHtml enabled on both sides. This is a compiler throughput benchmark, not a browser paint benchmark. Results depend on hardware, Node.js and package versions. The lightweight snarkdown parser is measured only on the table-free prose subset because it does not implement GFM tables.
 
 The **rich** corpus contains nine public README/media pages chosen for dense links and image references. The **spec** corpus contains three authoritative Markdown technical specifications (Rust RFC, React RFC, Kubernetes KEP). The **prose** corpus contains six regular documentation chapters. The **reference** corpus adds six large Node.js API reference documents, including table-heavy pages. The **all** corpus combines all twenty-four sources.
 
@@ -14,41 +14,41 @@ The **rich** corpus contains nine public README/media pages chosen for dense lin
 
 | Source | Group | Words | Images | Normalized Markdown chars | FluxMark chars | FluxMark delta |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
-| vue-core-readme | rich | 198 | 3 | 2,052 | 1,996 | -2.73% |
-| vite-readme | rich | 135 | 3 | 1,616 | 1,565 | -3.16% |
-| svelte-readme | rich | 176 | 2 | 1,428 | 1,407 | -1.47% |
-| nuxt-readme | rich | 418 | 0 | 3,360 | 3,310 | -1.49% |
-| astro-readme | rich | 159 | 25 | 4,434 | 4,252 | -4.1% |
-| storybook-readme | rich | 518 | 26 | 8,545 | 8,307 | -2.79% |
-| deno-readme | rich | 278 | 5 | 3,103 | 2,996 | -3.45% |
+| vue-core-readme | rich | 204 | 3 | 2,645 | 2,623 | -0.83% |
+| vite-readme | rich | 135 | 3 | 2,816 | 2,803 | -0.46% |
+| svelte-readme | rich | 176 | 2 | 1,651 | 1,642 | -0.55% |
+| nuxt-readme | rich | 452 | 0 | 5,306 | 5,299 | -0.13% |
+| astro-readme | rich | 159 | 25 | 4,961 | 4,817 | -2.9% |
+| storybook-readme | rich | 625 | 26 | 17,130 | 17,024 | -0.62% |
+| deno-readme | rich | 278 | 5 | 3,224 | 3,124 | -3.1% |
 | react-readme | rich | 538 | 5 | 4,969 | 4,859 | -2.21% |
 | typescript-readme | rich | 199 | 4 | 2,457 | 2,386 | -2.89% |
-| vue-introduction | prose | 1,133 | 0 | 8,362 | 8,313 | -0.59% |
+| vue-introduction | prose | 1,133 | 0 | 9,974 | 10,027 | +0.53% |
 | vue-faq | prose | 1,369 | 0 | 9,475 | 9,423 | -0.55% |
 | vue-community | prose | 858 | 0 | 6,000 | 5,936 | -1.07% |
 | vite-troubleshooting | prose | 2,140 | 0 | 15,792 | 15,621 | -1.08% |
 | node-contributing | prose | 3,943 | 0 | 25,456 | 25,324 | -0.52% |
-| rust-installation | prose | 916 | 0 | 6,033 | 5,971 | -1.03% |
-| rust-rfc-nll | spec | 13,369 | 0 | 83,244 | 83,129 | -0.14% |
+| rust-installation | prose | 920 | 0 | 6,134 | 6,074 | -0.98% |
+| rust-rfc-nll | spec | 13,371 | 0 | 83,272 | 83,158 | -0.14% |
 | react-rfc-server-components | spec | 7,390 | 0 | 49,225 | 49,089 | -0.28% |
-| kubernetes-kep-in-place-resize | spec | 11,608 | 0 | 88,271 | 87,780 | -0.56% |
-| node-api-fs | reference | 28,864 | 0 | 217,275 | 216,356 | -0.42% |
-| node-api-errors | reference | 12,342 | 0 | 95,268 | 95,167 | -0.11% |
+| kubernetes-kep-in-place-resize | spec | 11,620 | 0 | 88,349 | 87,870 | -0.54% |
+| node-api-fs | reference | 28,864 | 0 | 225,412 | 224,780 | -0.28% |
+| node-api-errors | reference | 13,308 | 0 | 114,387 | 114,762 | +0.33% |
 | node-api-stream | reference | 17,847 | 0 | 133,056 | 133,493 | +0.33% |
 | node-api-http | reference | 16,491 | 0 | 125,191 | 125,276 | +0.07% |
 | node-api-path | reference | 1,773 | 0 | 14,437 | 14,416 | -0.15% |
-| node-api-buffer | reference | 17,189 | 0 | 130,266 | 130,508 | +0.19% |
-| **Total** | | **139,851** | | **1,039,361** | **1,036,926** | **-0.23%** |
+| node-api-buffer | reference | 17,195 | 0 | 130,288 | 130,534 | +0.19% |
+| **Total** | | **140,988** | | **1,081,653** | **1,080,406** | **-0.12%** |
 
 ## Results by source type
 
 | Corpus | Documents | Words | Images | Tables | Source chars | Non-whitespace chars | Render vs Markdown-it | Render vs marked |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Link/media-rich public READMEs | 9 | 2,619 | 73 | 5 | -2.77% | -3.09% | 2.23× | 1.53× |
-| Authoritative technical specifications | 3 | 32,367 | 0 | 0 | -0.34% | -0.56% | 1.35× | 1.46× |
-| Prose-heavy documentation chapters | 6 | 10,359 | 0 | 0 | -0.75% | -0.89% | 1.43× | 1.38× |
-| Large API and reference documents | 6 | 94,506 | 0 | 5 | -0.04% | -0.74% | 1.40× | 1.37× |
-| All public documentation sources | 24 | 139,851 | 73 | 10 | -0.23% | -0.79% | 1.44× | 1.31× |
+| Link/media-rich public READMEs | 9 | 2,766 | 73 | 5 | -1.29% | -1.76% | 1.77× | 1.22× |
+| Authoritative technical specifications | 3 | 32,381 | 0 | 0 | -0.33% | -0.55% | 1.23× | 1.32× |
+| Prose-heavy documentation chapters | 6 | 10,363 | 0 | 0 | -0.58% | -0.79% | 1.27× | 1.25× |
+| Large API and reference documents | 6 | 95,478 | 0 | 5 | +0.07% | -0.63% | 1.30× | 1.16× |
+| All public documentation sources | 24 | 140,988 | 73 | 10 | -0.12% | -0.68% | 1.37× | 1.20× |
 
 ## Throughput
 
@@ -56,57 +56,57 @@ The **rich** corpus contains nine public README/media pages chosen for dense lin
 
 | Engine | Parse median (ms) | Render median (ms) | Render MiB/s | Render time vs FluxMark |
 | --- | ---: | ---: | ---: | ---: |
-| FluxMark | 0.65 | 0.87 | 34.32 | 1.00× |
-| markdown-it | 2.07 | 1.95 | 15.80 | 2.23× |
-| marked | 1.17 | 1.34 | 23.05 | 1.53× |
+| FluxMark | 0.95 | 1.20 | 35.78 | 1.00× |
+| markdown-it | 2.23 | 2.12 | 20.50 | 1.77× |
+| marked | 1.27 | 1.46 | 29.76 | 1.22× |
 
-FluxMark render speedup versus Markdown-it: **2.23×**
-FluxMark render speedup versus marked: **1.53×**
+FluxMark render speedup versus Markdown-it: **1.77×**
+FluxMark render speedup versus marked: **1.22×**
 
 ### Authoritative technical specifications
 
 | Engine | Parse median (ms) | Render median (ms) | Render MiB/s | Render time vs FluxMark |
 | --- | ---: | ---: | ---: | ---: |
-| FluxMark | 4.22 | 5.06 | 41.85 | 1.00× |
-| markdown-it | 6.38 | 6.83 | 31.11 | 1.35× |
-| marked | 6.66 | 7.39 | 28.73 | 1.46× |
+| FluxMark | 4.59 | 5.51 | 38.46 | 1.00× |
+| markdown-it | 6.29 | 6.76 | 31.43 | 1.23× |
+| marked | 6.56 | 7.26 | 29.28 | 1.32× |
 
-FluxMark render speedup versus Markdown-it: **1.35×**
-FluxMark render speedup versus marked: **1.46×**
+FluxMark render speedup versus Markdown-it: **1.23×**
+FluxMark render speedup versus marked: **1.32×**
 
 ### Prose-heavy documentation chapters
 
 | Engine | Parse median (ms) | Render median (ms) | Render MiB/s | Render time vs FluxMark |
 | --- | ---: | ---: | ---: | ---: |
-| FluxMark | 1.33 | 1.54 | 43.96 | 1.00× |
-| markdown-it | 2.17 | 2.20 | 31.06 | 1.43× |
-| marked | 1.94 | 2.14 | 32.00 | 1.38× |
-| snarkdown | — | 1.89 | 36.21 | 1.22× |
+| FluxMark | 1.48 | 1.73 | 40.27 | 1.00× |
+| markdown-it | 2.12 | 2.20 | 31.82 | 1.27× |
+| marked | 1.97 | 2.16 | 32.44 | 1.25× |
+| snarkdown | — | 1.39 | 50.28 | 0.81× |
 
-FluxMark render speedup versus Markdown-it: **1.43×**
-FluxMark render speedup versus marked: **1.38×**
+FluxMark render speedup versus Markdown-it: **1.27×**
+FluxMark render speedup versus marked: **1.25×**
 
 ### Large API and reference documents
 
 | Engine | Parse median (ms) | Render median (ms) | Render MiB/s | Render time vs FluxMark |
 | --- | ---: | ---: | ---: | ---: |
-| FluxMark | 17.97 | 22.62 | 30.32 | 1.00× |
-| markdown-it | 29.37 | 31.60 | 21.71 | 1.40× |
-| marked | 26.89 | 30.89 | 22.21 | 1.37× |
+| FluxMark | 20.26 | 27.86 | 25.57 | 1.00× |
+| markdown-it | 31.01 | 36.11 | 19.72 | 1.30× |
+| marked | 28.24 | 32.19 | 22.12 | 1.16× |
 
-FluxMark render speedup versus Markdown-it: **1.40×**
-FluxMark render speedup versus marked: **1.37×**
+FluxMark render speedup versus Markdown-it: **1.30×**
+FluxMark render speedup versus marked: **1.16×**
 
 ### All public documentation sources
 
 | Engine | Parse median (ms) | Render median (ms) | Render MiB/s | Render time vs FluxMark |
 | --- | ---: | ---: | ---: | ---: |
-| FluxMark | 24.35 | 33.11 | 30.06 | 1.00× |
-| markdown-it | 41.96 | 47.83 | 20.86 | 1.44× |
-| marked | 37.93 | 43.37 | 23.00 | 1.31× |
+| FluxMark | 27.34 | 36.59 | 28.33 | 1.00× |
+| markdown-it | 42.91 | 50.09 | 20.72 | 1.37× |
+| marked | 38.51 | 44.01 | 23.58 | 1.20× |
 
-FluxMark render speedup versus Markdown-it: **1.44×**
-FluxMark render speedup versus marked: **1.31×**
+FluxMark render speedup versus Markdown-it: **1.37×**
+FluxMark render speedup versus marked: **1.20×**
 
 ## Sources
 

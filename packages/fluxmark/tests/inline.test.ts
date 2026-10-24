@@ -59,6 +59,15 @@ describe('FluxMark inline parser', () => {
     expect(both?.style.italic).toBe(true);
   });
 
+  it('supports backslash escapes and raw inline HTML', () => {
+    const escaped = parseFluxInline('\\*literal\\* and [a\\|b\\]|c]');
+    expect(escaped.map((token) => token.content).join('')).toBe('*literal* and a|b]');
+    expect(escaped.some((token) => token.style.bold)).toBe(false);
+    expect(escaped.find((token) => token.style.code)?.content).toBe('a|b]');
+    const [html] = parseFluxInline('!<span class="mark">');
+    expect(html).toMatchObject({ type: 'html', content: '<span class="mark">' });
+  });
+
   it('parses first-class images as ![src|alt], with optional alt text', () => {
     const [image] = parseFluxInline('![https://example.com/architecture.png|Architecture]');
     expect(image).toMatchObject({

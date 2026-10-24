@@ -21,9 +21,9 @@ FluxMark is not a Markdown compatibility layer. Its indentation-based blocks, pi
 
 ## Compact and fast
 
-On a reproducible 24-document public corpus of about 1 MB normalized Markdown, full parsing plus semantic HTML generation was about 1.44× faster than markdown-it and 1.31× faster than marked. On link-heavy READMEs the render advantage increased to about 2.2×.
+On a reproducible 24-document public corpus of about 1 MB normalized Markdown, full parsing plus semantic HTML generation was about 1.37× faster than markdown-it and 1.20× faster than marked. On link-heavy READMEs the render advantage increased to about 1.8×.
 
-Across the corpus, FluxMark used 0.23% fewer source characters. Compact header tables declare columns once, while sparse key-value tables remain available. Images use FluxMark's native image node; raw HTML is excluded because FluxMark has no raw HTML node.
+Across the corpus, FluxMark used 0.12% fewer source characters. Compact header tables declare columns once, while sparse key-value tables remain available. Images and raw HTML use native nodes; raw HTML requires the explicit `allowHtml` renderer option.
 
 See the [benchmark methodology and pinned public sources](https://github.com/Okysu/fluxmark/blob/main/benchmarks/RESULTS.md). Results depend on hardware and input shape, and the benchmark is not a DOM paint measurement.
 
@@ -119,6 +119,8 @@ Blocks are nested by physical indentation. A space is one indentation column; a 
 | Ordered list | `1. item`, `2. item`, `2.1. nested item` |
 | Task | `* [ ] item` or `* [x] item` |
 | Image | `![src\|alt]` (alt optional) |
+| Escapes | `\*`, `\|`, `\]` and other ASCII punctuation |
+| Raw HTML | Inline `!<tag>`, block `!html`; requires `allowHtml` |
 | Horizontal rule | `---` or more hyphens on an otherwise empty line |
 | Bold | `*text*` or `**text**` |
 | Italic | `_text_` |
@@ -127,7 +129,7 @@ Blocks are nested by physical indentation. A space is one indentation column; a 
 
 Pipe modifiers use `[content|modifier,modifier]`. Built-in aliases include `b`, `i`, `u`, `s`, `m`, `c` and their long names, three- or six-digit hex colors, HTTP(S)/mailto URLs, and `?tooltip`. Place a tooltip last because it consumes the remaining modifier text.
 
-FluxMark does not use fenced Markdown code blocks, Markdown pipe tables, Markdown link syntax or raw HTML. Images use the native `![src|alt]` form rather than Markdown image syntax. See the [complete syntax guide](https://okysu.github.io/fluxmark/guide/syntax).
+FluxMark does not use fenced Markdown code blocks, Markdown pipe tables or Markdown link syntax. Images use native `![src|alt]`; raw HTML uses explicit `!<tag>` and `!html` nodes and is escaped unless `allowHtml` is enabled. See the [complete syntax guide](https://okysu.github.io/fluxmark/guide/syntax).
 
 ## Default styles
 

@@ -181,6 +181,7 @@ interface FluxInlineStyle {
 | `overrides` | `FluxHtmlRendererOverrides` | `{}` | Node and `InlineToken` overrides |
 | `classPrefix` | `string` | `'fx'` | Output CSS class prefix, normalized to a safe token |
 | `documentWrapper` | `boolean` | `true` | Wrap output in an `<article>` document container |
+| `allowHtml` | `boolean` | `false` | Emit raw HTML blocks and inline HTML tokens without escaping; trusted content only |
 
 `FluxRenderToHtmlOptions` extends these fields with `parser?: FluxParserOptions` and `plugins?: FluxPluginDefinition[]`.
 

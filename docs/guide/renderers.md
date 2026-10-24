@@ -41,6 +41,7 @@ const renderer = new FluxHtmlRenderer({
 | --- | --- | --- | --- |
 | `classPrefix` | `string` | `'fx'` | Output class prefix, normalized to a safe class token |
 | `documentWrapper` | `boolean` | `true` | Wrap the document in `<article class="fx-document">` |
+| `allowHtml` | `boolean` | `false` | Emit raw HTML blocks and inline HTML tokens without escaping; trusted content only |
 | `overrides` | `FluxHtmlRendererOverrides` | `{}` | Block-node and `InlineToken` overrides |
 
 The default stylesheet uses the `fx` prefix. Load it with `import 'fluxmark/styles.css'` or inject `getFluxDefaultStyles()` once. When you change the prefix, provide matching selectors yourself.

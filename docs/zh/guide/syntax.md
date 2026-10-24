@@ -236,7 +236,7 @@ URL 修饰符直接写在管道右侧：
 [文档|https://example.com/docs,?打开文档]
 ```
 
-管道语法中的内容是原始文本，不会递归解析为另一组行内 token。FluxMark 不使用 Markdown 的 `[文本](URL)` 链接形式，也不定义原始 HTML。
+管道语法中的内容是原始文本，不会递归解析为另一组行内 token。FluxMark 不使用 Markdown 的 `[文本](URL)` 链接形式。
 
 ### 图片
 
@@ -248,6 +248,41 @@ URL 修饰符直接写在管道右侧：
 ```
 
 `![src]` 是合法的装饰性图片，`alt` 为空；`![src|alt]` 提供无障碍描述。HTML 渲染器会使用同一 URL 策略检查图片地址、转义替代文本，并输出 `loading="lazy" decoding="async"`。非法地址会输出转义后的回退文本，而不是图片元素。不支持 Markdown 的 `![alt](url)` 形式。
+
+### 转义
+
+反斜杠可以转义 ASCII 标点，使其保持字面量：
+
+```text live
+\*不是粗体\*、\[不是链接\]，以及字面量竖线 \|。
+```
+
+可转义 `\`、`[`、`]`、`|`、`*`、`_`、`=`、`~`、反引号以及其他 ASCII 标点。代码块和行内代码中的反斜杠保持原样。
+
+### 原始 HTML
+
+原始 HTML 必须显式标记，而不会静默透传。行内标签前加 `!`：
+
+```text
+包含 !<span class="accent">行内 HTML!</span> 的文本。
+```
+
+块级 HTML 以 `!html` 开始，缩进内容会原样保留：
+
+```text
+!html
+  <div class="callout">
+    <strong>原始 HTML 块</strong>
+  </div>
+```
+
+默认情况下 HTML 会被转义。需要输出时显式开启：
+
+```ts
+renderToHTML(source, { allowHtml: true })
+```
+
+仅对可信内容开启 `allowHtml`。原始 HTML 会绕过常规转义，渲染不可信输入前必须自行清洗。
 
 ## 解析诊断与位置
 

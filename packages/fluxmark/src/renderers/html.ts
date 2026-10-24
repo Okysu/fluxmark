@@ -66,11 +66,13 @@ export class FluxHtmlRenderer {
   private readonly overrides: FluxHtmlRendererOverrides;
   private readonly prefix: string;
   private readonly documentWrapper: boolean;
+  private readonly allowHtml: boolean;
 
   public constructor(options: FluxHtmlRendererOptions = {}) {
     this.overrides = { ...(options.overrides ?? {}) };
     this.prefix = safeClassToken(options.classPrefix ?? 'fx');
     this.documentWrapper = options.documentWrapper ?? true;
+    this.allowHtml = options.allowHtml ?? false;
   }
 
   public render(document: FluxDocument): string {
@@ -127,6 +129,11 @@ export class FluxHtmlRenderer {
 
   private renderTokenDefault(token: FluxInlineToken): string {
     if (token.type === 'break') return '<br />';
+    if (token.type === 'html') {
+      return this.allowHtml
+        ? token.content
+        : `<span class="${this.prefix}-raw-html">${escapeHtml(token.content)}</span>`;
+    }
     if (token.type === 'image') {
       const src = safeFluxUrl(token.attributes.src ?? '');
       if (src === null) {
@@ -253,6 +260,10 @@ export class FluxHtmlRenderer {
       }
       case 'HorizontalRule':
         return `<hr class="${p}-divider" />`;
+      case 'RawHtml':
+        return this.allowHtml
+          ? node.content
+          : `<pre class="${p}-raw-html">${escapeHtml(node.content)}</pre>`;
       case 'CustomBlock': {
         const content = node.content.length > 0
           ? `<pre class="${p}-custom-content">${escapeHtml(node.content)}</pre>`

@@ -102,6 +102,12 @@ export interface FluxHorizontalRule extends FluxNodeBase {
   type: 'HorizontalRule';
 }
 
+export interface FluxRawHtml extends FluxNodeBase {
+  type: 'RawHtml';
+  /** Raw HTML source. Rendered only when allowHtml is enabled. */
+  content: string;
+}
+
 export interface FluxCustomBlock extends FluxNodeBase {
   type: 'CustomBlock';
   name: string;
@@ -119,6 +125,7 @@ export type FluxBlockNode =
   | FluxList
   | FluxListItem
   | FluxHorizontalRule
+  | FluxRawHtml
   | FluxCustomBlock;
 
 export type FluxNode = FluxDocument | FluxBlockNode;
@@ -126,7 +133,7 @@ export type FluxNodeType = FluxNode['type'];
 export type FluxNodeByType<T extends FluxNodeType> = Extract<FluxNode, { type: T }>;
 export type FluxParentNode = Extract<FluxNode, { children: unknown[] }>;
 
-export type FluxInlineTokenType = 'text' | 'style' | 'code' | 'image' | 'break';
+export type FluxInlineTokenType = 'text' | 'style' | 'code' | 'image' | 'html' | 'break';
 
 export interface FluxInlineStyle {
   bold: boolean;
@@ -287,6 +294,8 @@ export interface FluxHtmlRendererOptions {
   classPrefix?: string;
   /** Wrap the document in an article element. Defaults to true. */
   documentWrapper?: boolean;
+  /** Emit raw HTML nodes and inline HTML tokens without escaping. Defaults to false. */
+  allowHtml?: boolean;
 }
 
 export interface FluxRenderToHtmlOptions extends FluxHtmlRendererOptions {
