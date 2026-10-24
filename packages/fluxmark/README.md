@@ -18,6 +18,12 @@ FluxMark is not a Markdown compatibility layer. Its indentation-based blocks, pi
 - Exact task source updates without reformatting the document.
 - Documentation-embedded live examples that surface HTML, AST and compile timings.
 
+## Compact and fast
+
+On a reproducible corpus of link-heavy public documentation, equivalent FluxMark sources used about 2% fewer characters than normalized Markdown. Full parsing and semantic HTML generation were about 2.0× faster than markdown-it and 1.5× faster than marked on that corpus.
+
+See the [benchmark methodology and pinned public sources](https://github.com/Okysu/fluxmark/blob/main/benchmarks/RESULTS.md). Results depend on hardware and input; the benchmark is not a DOM paint measurement.
+
 ## Installation
 
 ```bash

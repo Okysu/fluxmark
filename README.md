@@ -21,6 +21,17 @@ FluxMark is a lightweight TypeScript compiler for structured documents. It turns
 - **Interactive by default.** Task checkboxes and live Playground examples share the same compiler and can update their original source.
 - **Bilingual documentation.** Full English and Chinese guides, API reference and a live Playground built with VitePress.
 
+## Compact source, faster rendering
+
+Given the same normalized document hierarchy and content, FluxMark expresses public articles in fewer source characters and compiles them to HTML faster than established Markdown toolchains.
+
+| Public corpus | Source characters | Full HTML render vs markdown-it | vs marked |
+| --- | ---: | ---: | ---: |
+| Six link- and media-rich READMEs | 2.04% fewer | ~2.0× | ~1.5× |
+| All twelve documentation sources | 0.97% fewer | ~1.3× | ~1.2× |
+
+The benchmark normalizes public Markdown sources into the same semantic tree, serializes that tree as Markdown and FluxMark, and measures parse plus semantic HTML generation. Image references are normalized to links because FluxMark does not have an image node. See [the methodology, pinned sources and full results](./benchmarks/RESULTS.md).
+
 ## Install
 
 ```bash

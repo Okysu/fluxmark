@@ -1,0 +1,96 @@
+export const sources = [
+  {
+    id: 'vue-core-readme',
+    group: 'rich',
+    repository: 'vuejs/core',
+    path: 'README.md',
+    commit: '0ff253bfba3ee8d3d65448bd44ad890fd01b0ecd',
+    license: 'MIT',
+  },
+  {
+    id: 'vite-readme',
+    group: 'rich',
+    repository: 'vitejs/vite',
+    path: 'README.md',
+    commit: '82e7aa0374a15e1c67594557ab5893c91578f897',
+    license: 'MIT',
+  },
+  {
+    id: 'svelte-readme',
+    group: 'rich',
+    repository: 'sveltejs/svelte',
+    path: 'README.md',
+    commit: '356c8766a024d5982c276e898903fadaceaca960',
+    license: 'MIT',
+  },
+  {
+    id: 'nuxt-readme',
+    group: 'rich',
+    repository: 'nuxt/nuxt',
+    path: 'README.md',
+    commit: '2a81d4a628b8b4c8c844e8dcbfdcf7ae7a7a612e',
+    license: 'MIT',
+  },
+  {
+    id: 'astro-readme',
+    group: 'rich',
+    repository: 'withastro/astro',
+    path: 'README.md',
+    commit: '5fe699c888d0423db75cac3f0939409d7eb28e37',
+    license: 'MIT',
+  },
+  {
+    id: 'storybook-readme',
+    group: 'rich',
+    repository: 'storybookjs/storybook',
+    path: 'README.md',
+    commit: '9b4e295a7f994b6496cb1fdd50b436dd64925cca',
+    license: 'MIT',
+  },
+  {
+    id: 'vue-introduction',
+    repository: 'vuejs/docs',
+    path: 'src/guide/introduction.md',
+    commit: '40aa88af0094f7bab4aaf786e55c748a6a251d88',
+    license: 'MIT',
+  },
+  {
+    id: 'vue-faq',
+    repository: 'vuejs/docs',
+    path: 'src/about/faq.md',
+    commit: '40aa88af0094f7bab4aaf786e55c748a6a251d88',
+    license: 'MIT',
+  },
+  {
+    id: 'vue-community',
+    repository: 'vuejs/docs',
+    path: 'src/about/community-guide.md',
+    commit: '40aa88af0094f7bab4aaf786e55c748a6a251d88',
+    license: 'MIT',
+  },
+  {
+    id: 'vite-troubleshooting',
+    repository: 'vitejs/vite',
+    path: 'docs/guide/troubleshooting.md',
+    commit: '82e7aa0374a15e1c67594557ab5893c91578f897',
+    license: 'MIT',
+  },
+  {
+    id: 'node-contributing',
+    repository: 'nodejs/node',
+    path: 'doc/contributing/pull-requests.md',
+    commit: 'b12bad4b1119608ba98dcfdcddb4fabaa3c93daf',
+    license: 'MIT',
+  },
+  {
+    id: 'rust-installation',
+    repository: 'rust-lang/book',
+    path: 'src/ch01-01-installation.md',
+    commit: '1500248d8f230566e4ec9f27fcbb8fe9e2898ab1',
+    license: 'MIT OR Apache-2.0',
+  },
+];
+
+export function rawUrl(source) {
+  return `https://raw.githubusercontent.com/${source.repository}/${source.commit}/${source.path}`;
+}

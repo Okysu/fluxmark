@@ -2,7 +2,6 @@ import type {
   FluxBlockNode,
   FluxDocument,
   FluxHtmlNodeOverride,
-  FluxHtmlRenderHelper,
   FluxHtmlRendererOptions,
   FluxHtmlRendererOverrides,
   FluxInlineToken,
@@ -79,64 +78,74 @@ export class FluxHtmlRenderer {
   }
 
   public renderInline(tokens: FluxInlineToken[]): string {
+    if (this.overrides.InlineToken === undefined) {
+      let html = '';
+      for (const token of tokens) html += this.renderTokenDefault(token);
+      return html;
+    }
     return tokens.map((token) => this.renderToken(token)).join('');
   }
 
   private renderChildren(children: FluxBlockNode[]): string {
-    return children.map((child) => this.renderNode(child)).join('');
+    let html = '';
+    for (const child of children) html += this.renderNode(child);
+    return html;
   }
 
   private renderNode(node: FluxNode): string {
     const children = childrenOf(node);
     const childrenHtml = children === null ? '' : this.renderChildren(children);
-    const defaultRender = (): string => this.renderDefault(node, childrenHtml);
-    const helper: FluxHtmlRenderHelper = {
-      escapeHtml,
-      escapeAttribute,
-      safeUrl: safeFluxUrl,
-      renderInline: (tokens) => this.renderInline(tokens),
-      renderChildren: (nodes) => this.renderChildren(nodes),
-      defaultRender,
-    };
     const override = this.overrides[node.type] as
       | FluxHtmlNodeOverride<FluxNode>
       | undefined;
-    return override === undefined ? defaultRender() : override(node, childrenHtml, helper);
-  }
-
-  private renderToken(token: FluxInlineToken): string {
-    const defaultRender = (target: FluxInlineToken = token): string =>
-      this.renderTokenDefault(target);
-    const override = this.overrides.InlineToken;
-    if (override === undefined) return defaultRender();
-    return override(token, defaultRender, {
+    if (override === undefined) return this.renderDefault(node, childrenHtml);
+    return override(node, childrenHtml, {
       escapeHtml,
       escapeAttribute,
       safeUrl: safeFluxUrl,
       renderInline: (tokens) => this.renderInline(tokens),
       renderChildren: (nodes) => this.renderChildren(nodes),
+      defaultRender: () => this.renderDefault(node, childrenHtml),
     });
+  }
+
+  private renderToken(token: FluxInlineToken): string {
+    const override = this.overrides.InlineToken;
+    if (override === undefined) return this.renderTokenDefault(token);
+    return override(
+      token,
+      (target: FluxInlineToken = token) => this.renderTokenDefault(target),
+      {
+        escapeHtml,
+        escapeAttribute,
+        safeUrl: safeFluxUrl,
+        renderInline: (tokens) => this.renderInline(tokens),
+        renderChildren: (nodes) => this.renderChildren(nodes),
+      },
+    );
   }
 
   private renderTokenDefault(token: FluxInlineToken): string {
     if (token.type === 'break') return '<br />';
     let html = escapeHtml(token.content);
     const { style } = token;
-    const custom = new Set(style.customModifiers.map((modifier) => modifier.toLowerCase()));
+    const custom = style.customModifiers.length === 0
+      ? null
+      : new Set(style.customModifiers.map((modifier) => modifier.toLowerCase()));
 
     if (token.type === 'code' || style.code) {
       html = `<code class="${this.prefix}-inline-code">${html}</code>`;
     }
-    if (custom.has('kbd')) html = `<kbd class="${this.prefix}-kbd">${html}</kbd>`;
+    if (custom?.has('kbd')) html = `<kbd class="${this.prefix}-kbd">${html}</kbd>`;
     if (style.bold) html = `<strong>${html}</strong>`;
     if (style.italic) html = `<em>${html}</em>`;
     if (style.underline) html = `<u>${html}</u>`;
     if (style.strike) html = `<s>${html}</s>`;
     if (style.mark) html = `<mark>${html}</mark>`;
-    if (custom.has('badge')) {
+    if (custom?.has('badge')) {
       html = `<span class="${this.prefix}-badge">${html}</span>`;
     }
-    if (custom.has('spoiler')) {
+    if (custom?.has('spoiler')) {
       html = `<span class="${this.prefix}-spoiler" role="button" tabindex="0" aria-label="Spoiler">${html}</span>`;
     }
 
@@ -156,18 +165,19 @@ export class FluxHtmlRenderer {
       html = `<span class="${this.prefix}-tooltip" data-flux-tooltip="${tooltip}" tabindex="0">${html}</span>`;
     }
 
-    const unknownModifiers = style.customModifiers.filter(
-      (modifier) => !['kbd', 'badge', 'spoiler'].includes(modifier.toLowerCase()),
-    );
+    if (style.customModifiers.length > 0) {
+      const unknownModifiers = style.customModifiers.filter(
+        (modifier) => !['kbd', 'badge', 'spoiler'].includes(modifier.toLowerCase()),
+      );
+      if (unknownModifiers.length > 0) {
+        html = `<span data-flux-modifiers="${escapeAttribute(unknownModifiers.join(' '))}">${html}</span>`;
+      }
+    }
+
     const color = style.color !== null && /^#(?:[\da-fA-F]{3}|[\da-fA-F]{6})$/.test(style.color)
       ? ` style="color:${style.color}"`
       : '';
-    const modifierData = unknownModifiers.length > 0
-      ? ` data-flux-modifiers="${escapeAttribute(unknownModifiers.join(' '))}"`
-      : '';
-    if (color.length > 0 || modifierData.length > 0) {
-      html = `<span${color}${modifierData}>${html}</span>`;
-    }
+    if (color.length > 0) html = `<span${color}>${html}</span>`;
     return html;
   }
 
