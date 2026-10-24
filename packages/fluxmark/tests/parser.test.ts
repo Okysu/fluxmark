@@ -72,6 +72,19 @@ After`);
     expect(aligned.rows[0]?.cells.B?.tokens[0]?.content).toBe('two');
   });
 
+  it('uses a header row for compact positional table records', () => {
+    const ast = parseFluxMarkDocument(`@ Compact
+  - Name | State | Link
+  - Core | Stable | https://example.com
+  - Renderer | WIP | local`);
+    const table = ast.children[0] as FluxDataTable;
+    expect(table.columns).toEqual(['Name', 'State', 'Link']);
+    expect(table.rows).toHaveLength(2);
+    expect(table.rows[0]?.cells.Name?.tokens[0]?.content).toBe('Core');
+    expect(table.rows[0]?.cells.Link?.tokens[0]?.content).toBe('https://example.com');
+    expect(table.rows[1]?.cells.State?.tokens[0]?.content).toBe('WIP');
+  });
+
   it('stores prototype-like table column names as safe own properties', () => {
     const ast = parseFluxMarkDocument(`@ Safe keys
   - __proto__: first | constructor: second

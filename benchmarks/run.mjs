@@ -46,6 +46,19 @@ function percentile(values, fraction) {
   return sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * fraction))];
 }
 
+function countDataTables(value) {
+  if (value === null || typeof value !== 'object') return 0;
+  if (Array.isArray(value)) {
+    return value.reduce((sum, item) => sum + countDataTables(item), 0);
+  }
+  let count = value.type === 'DataTable' ? 1 : 0;
+  for (const child of Object.values(value)) {
+    if (child === value) continue;
+    if (typeof child === 'object') count += countDataTables(child);
+  }
+  return count;
+}
+
 function countWords(blocks) {
   let count = 0;
   for (const block of blocks) {
@@ -140,6 +153,12 @@ for (const source of sources) {
       `${source.id} produced FluxMark issues: ${fluxAst.issues
         .map((issue) => issue.message)
         .join('; ')}`,
+    );
+  }
+  const parsedTables = countDataTables(fluxAst);
+  if (parsedTables !== stats.tables) {
+    throw new Error(
+      `${source.id} table mismatch: source ${stats.tables}, FluxMark AST ${parsedTables}`,
     );
   }
   loaded.push({
@@ -312,7 +331,7 @@ Generated at ${results.generatedAt} with Node.js ${process.version} on ${results
 
 Public Markdown sources are normalized into a common semantic subset of headings, paragraphs, blockquotes, simple lists, fenced code, links, inline emphasis and image references. The same normalized block tree is serialized as Markdown and FluxMark. The benchmark measures parsing and full semantic HTML string rendering with Markdown-it, marked and FluxMark.
 
-Image references use native image syntax in both formats. Tables are retained and serialized through each format's native table syntax. Raw HTML is omitted from both sides because FluxMark deliberately has no raw HTML node and an equivalent rendering comparison is impossible. This is a compiler throughput benchmark, not a browser paint benchmark. Results depend on hardware, Node.js and package versions. The lightweight snarkdown parser is measured only on the table-free prose subset because it does not implement GFM tables.
+Image references use native image syntax in both formats. Tables are retained; FluxMark uses a compact header row so column names appear once. Raw HTML is omitted from both sides because FluxMark deliberately has no raw HTML node and an equivalent rendering comparison is impossible. This is a compiler throughput benchmark, not a browser paint benchmark. Results depend on hardware, Node.js and package versions. The lightweight snarkdown parser is measured only on the table-free prose subset because it does not implement GFM tables.
 
 The **rich** corpus contains nine public README/media pages chosen for dense links and image references. The **spec** corpus contains three authoritative Markdown technical specifications (Rust RFC, React RFC, Kubernetes KEP). The **prose** corpus contains six regular documentation chapters. The **reference** corpus adds six large Node.js API reference documents, including table-heavy pages. The **all** corpus combines all twenty-four sources.
 

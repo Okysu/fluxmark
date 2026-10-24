@@ -88,10 +88,9 @@ const englishRelease = `# Release notes / 0.1.0
     * [ ] Inspect the transformed AST
   # Rendering matrix
     @ Workbench capabilities
-      - Output: HTML | Signal: Semantic markup
-          Tasks: Checkbox to source update
-      - Output: AST | Signal: Formatted JSON
-          Tasks: Read-only inspection
+      - Output | Signal | Tasks
+      - HTML | Semantic markup | Checkbox to source update
+      - AST | Formatted JSON | Read-only inspection
   # Next on the roadmap
     :::timeline Beyond the workbench
       Plugin author toolkit | in progress
@@ -180,10 +179,9 @@ const chineseRelease = `# 版本说明 / 0.1.0
     * [ ] 查看转换后的 AST
   # 渲染矩阵
     @ 工作台能力
-      - 输出: HTML | 信号: 语义化标记
-          任务: 复选框回写源码
-      - 输出: AST | 信号: 格式化 JSON
-          任务: 只读检查
+      - 输出 | 信号 | 任务
+      - HTML | 语义化标记 | 复选框回写源码
+      - AST | 格式化 JSON | 只读检查
   # 下一步路线
     :::timeline 工作台之外
       插件作者工具链 | 进行中

@@ -21,9 +21,9 @@ FluxMark is not a Markdown compatibility layer. Its indentation-based blocks, pi
 
 ## Compact and fast
 
-On a reproducible 24-document public corpus of about 1 MB normalized Markdown, full parsing plus semantic HTML generation was about 1.44× faster than markdown-it and 1.31× faster than marked. On link-heavy READMEs the render advantage increased to about 2.3×.
+On a reproducible 24-document public corpus of about 1 MB normalized Markdown, full parsing plus semantic HTML generation was about 1.44× faster than markdown-it and 1.31× faster than marked. On link-heavy READMEs the render advantage increased to about 2.2×.
 
-Source-length savings are content-dependent: prose used about 0.75% fewer characters, while table-heavy material can be slightly larger because FluxMark repeats column names per record. Tables are included in the benchmark; images use FluxMark's native image node, and raw HTML is excluded because FluxMark has no raw HTML node.
+Across the corpus, FluxMark used 0.23% fewer source characters. Compact header tables declare columns once, while sparse key-value tables remain available. Images use FluxMark's native image node; raw HTML is excluded because FluxMark has no raw HTML node.
 
 See the [benchmark methodology and pinned public sources](https://github.com/Okysu/fluxmark/blob/main/benchmarks/RESULTS.md). Results depend on hardware and input shape, and the benchmark is not a DOM paint measurement.
 
@@ -95,8 +95,9 @@ Blocks are nested by physical indentation. A space is one indentation column; a 
     Nested callout content
 
   @ Release table
-    - Package: fluxmark | Status: [Stable|badge] | Owner: Ada
-    - Package: docs | Status: Beta | Owner: Lin
+    - Package | Status | Owner
+    - fluxmark | Stable | Ada
+    - docs | Beta | Lin
 
   $ ts
     const ast = parseFluxMark(source)

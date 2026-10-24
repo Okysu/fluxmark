@@ -92,28 +92,30 @@ Use `$` alone when no language is needed. The parser removes the smallest common
 
 ### Data tables
 
-`@` starts a data table, optionally followed by a title. Each record starts with `- ` and contains fields written as `key: value`. Multiple fields on one record are separated by `|`:
+`@` starts a data table, optionally followed by a title. For uniform records, make the first item a pipe-separated header row, then write values positionally:
 
 ```text live
 @ Project status
-  - Module: Parser | Status: Stable | Coverage: 95%
-  - Module: Renderer | Status: Beta | Coverage: 88%
+  - Module | Status | Coverage
+  - Parser | Stable | 95%
+  - Renderer | Beta | 88%
 ```
 
-Additional fields can follow a record on subsequent lines inside the table scope. These continuation lines may use exactly the record's indentation or be indented further:
+The header row is recognized when the first item has multiple fields and no `key:` syntax. It declares column names once instead of repeating them on every record.
+
+For sparse records whose columns vary, use explicit key-value records instead. Multiple fields on one record are separated by `|`:
 
 ```text
 @ Contact
-  - Name: Ada
-  Role: Maintainer
-    Site: [Home page|https://example.com]
+  - Name: Ada | Role: Maintainer
+  - Name: Lin | Site: [Home page|https://example.com]
 ```
 
-A continuation line must be indented deeper than the `@` line. It may match the `- ` record's indentation or be indented further; a line at the `@` line's indentation or shallower closes the table. Blank lines are skipped while the table remains open.
+Additional key-value fields can follow a record on subsequent lines inside the table scope. These continuation lines may use exactly the record's indentation or be indented further. A line at the `@` line's indentation or shallower closes the table. Blank lines are skipped while the table remains open.
 
-Columns are stored in `DataTable.columns` in first-appearance order. Each record becomes an entry in `DataTable.rows`, and cells are looked up by column name. Missing fields stay missing; the parser does not infer a value from another column.
+Columns are stored in `DataTable.columns` in first-appearance order. Each value row becomes an entry in `DataTable.rows`, and cells are looked up by column name. Missing positional and key-value cells stay missing in the AST and render as empty cells.
 
-Only a `|` outside backticks and square brackets separates fields. Each field must have a non-empty column name, a colon, and an optional value. A malformed field produces a parse warning and is ignored. This is not a Markdown pipe table: there is no header separator row and no horizontal field syntax beyond the record format.
+Only a `|` outside backticks and square brackets separates fields. In header mode, the first row must have at least two non-empty labels. In key-value mode, each field must have a non-empty column name, a colon, and an optional value. A malformed field produces a parse warning and is ignored. This is not a Markdown pipe table: there is no separator row.
 
 ### Lists
 

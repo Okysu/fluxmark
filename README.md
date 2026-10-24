@@ -28,13 +28,13 @@ We benchmark 24 pinned public Markdown documents: about 140k words and 1.04 MB o
 
 | Public corpus | Documents | Source characters | HTML render vs markdown-it | vs marked |
 | --- | ---: | ---: | ---: | ---: |
-| Link- and media-rich READMEs | 9 | 0.45% more | 2.30× | 1.54× |
-| Authoritative technical specifications | 3 | 0.34% fewer | 1.38× | 1.46× |
-| Prose-heavy documentation | 6 | 0.75% fewer | 1.37× | 1.39× |
-| Large API and reference docs | 6 | 0.05% more | 1.37× | 1.32× |
-| All sources | 24 | 0.08% fewer | 1.44× | 1.31× |
+| Link- and media-rich READMEs | 9 | 2.77% fewer | 2.23× | 1.53× |
+| Authoritative technical specifications | 3 | 0.34% fewer | 1.35× | 1.46× |
+| Prose-heavy documentation | 6 | 0.75% fewer | 1.43× | 1.38× |
+| Large API and reference docs | 6 | 0.04% fewer | 1.40× | 1.37× |
+| All sources | 24 | 0.23% fewer | 1.44× | 1.31× |
 
-Source-length gains depend on content. FluxMark's shorter links, emphasis and block markers help prose and link-heavy text, while tables repeat column names per row and can offset those savings. Rendering remains faster across every corpus, including 1.24× faster than snarkdown on the table-free prose subset. Tables are included and images are preserved as native image nodes. Raw HTML is excluded because an equivalent render is impossible. See [the full methodology, statistics and pinned sources](./benchmarks/RESULTS.md).
+Every corpus now uses fewer source characters. Compact tables declare columns once in a header row; links, emphasis and block markers stay short, while sparse key-value tables remain available for irregular records. Rendering is faster across every corpus, including 1.23× faster than snarkdown on the table-free prose subset. Images use native image nodes. Raw HTML is excluded because an equivalent render is impossible. See [the full methodology, statistics and pinned sources](./benchmarks/RESULTS.md).
 
 ## Install
 
@@ -83,8 +83,8 @@ The source above renders a section, a styled paragraph, a callout and an interac
     Indented lines belong to the callout automatically.
 
   @ Release table
-    - Package: fluxmark | Status: Stable
-      Owner: Core team
+    - Package | Status | Owner
+    - fluxmark | Stable | Core team
 
   $ ts
     const ast = parseFluxMark(source)

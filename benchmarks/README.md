@@ -40,7 +40,7 @@ Markdown-it's token stream is converted into a common block model for headings, 
 - Links use `[text](<url>)` in Markdown and `[text|url]` in FluxMark.
 - Bold, italic and strike-through use each language's native shorthand.
 - Fenced code becomes an indented `$ language` block in FluxMark.
-- Markdown tables become FluxMark key-value tables with the same headers and cells.
+- Markdown tables become FluxMark compact header tables, with column names declared once and positional value rows.
 - Ordered and unordered lists use physical indentation in FluxMark.
 - Image references use Markdown `![alt](src)` and FluxMark `![src|alt]`, preserving native image semantics.
 - Raw HTML is omitted from both sides because FluxMark deliberately has no raw HTML node and equivalent rendering is impossible.
@@ -67,14 +67,14 @@ On the recorded 24-document corpus:
 
 | Corpus | Documents | Source characters | Full HTML render vs Markdown-it | vs marked |
 | --- | ---: | ---: | ---: | ---: |
-| Link- and media-rich READMEs | 9 | 0.45% more | 2.30× | 1.54× |
-| Authoritative technical specifications | 3 | 0.34% fewer | 1.38× | 1.46× |
-| Prose-heavy documentation | 6 | 0.75% fewer | 1.37× | 1.39× |
-| Large API and reference documents | 6 | 0.05% more | 1.37× | 1.32× |
-| All sources | 24 | 0.08% fewer | 1.44× | 1.31× |
+| Link- and media-rich READMEs | 9 | 2.77% fewer | 2.23× | 1.53× |
+| Authoritative technical specifications | 3 | 0.34% fewer | 1.35× | 1.46× |
+| Prose-heavy documentation | 6 | 0.75% fewer | 1.43× | 1.38× |
+| Large API and reference documents | 6 | 0.04% fewer | 1.40× | 1.37× |
+| All sources | 24 | 0.23% fewer | 1.44× | 1.31× |
 
-On the table-free prose subset, FluxMark is also about 1.24× faster than snarkdown, a minimal Markdown renderer that does not implement GFM tables.
+On the table-free prose subset, FluxMark is also about 1.23× faster than snarkdown, a minimal Markdown renderer that does not implement GFM tables.
 
-Source-length gains depend on article shape. Prose and link-heavy text benefit from shorter inline markers; tables can be longer because FluxMark repeats column names per record. The rich subset and prose subset are small enough that startup overhead still matters. Snarkdown does not implement tables, so it is compared only on the table-free prose subset.
+Source-length gains hold across all four corpora. Compact header tables declare column names once; sparse key-value tables remain available for irregular records. The rich subset and prose subset are small enough that startup overhead still matters. Snarkdown does not implement tables, so it is compared only on the table-free prose subset.
 
 Treat these as engineering signals, not universal claims. Re-run on your own hardware before quoting them externally.

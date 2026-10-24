@@ -31,6 +31,7 @@ interface ListMarker {
 
 interface TableRecord {
   row: FluxDataTableRow;
+  nextColumn: number;
 }
 
 const DEFAULT_CALLOUT_VARIANTS = new Set(['quote', 'note', 'tip', 'warn', 'danger']);
@@ -340,6 +341,7 @@ export class FluxMarkParser {
     };
     const knownColumns = new Set<string>();
     let currentRecord: TableRecord | null = null;
+    let positionalColumns: string[] | null = null;
     this.index += 1;
 
     while (this.index < this.lines.length) {
@@ -352,15 +354,57 @@ export class FluxMarkParser {
       const content = candidate.content.trim();
       const recordMatch = /^-[ \t]+(.*)$/.exec(content);
       if (recordMatch !== null) {
+        const input = recordMatch[1] ?? '';
+        const segments = splitTableRecord(input).map((segment) => segment.trim());
+        if (
+          currentRecord === null &&
+          positionalColumns === null &&
+          segments.length > 1 &&
+          segments.every((segment) => !segment.includes(':'))
+        ) {
+          positionalColumns = [];
+          for (let index = 0; index < segments.length; index += 1) {
+            const label = segments[index] || `Column ${index + 1}`;
+            let key = label;
+            let suffix = 2;
+            while (knownColumns.has(key)) {
+              key = `${label} ${suffix}`;
+              suffix += 1;
+            }
+            knownColumns.add(key);
+            positionalColumns.push(key);
+            node.columns.push(key);
+          }
+          continue;
+        }
+
         const row: FluxDataTableRow = {
           line: candidate.number,
           cells: Object.create(null) as Record<string, FluxDataTableCell>,
         };
         node.rows.push(row);
-        currentRecord = { row };
-        this.parseTableSegments(recordMatch[1] ?? '', candidate, currentRecord, node, knownColumns);
+        currentRecord = { row, nextColumn: 0 };
+        if (positionalColumns !== null) {
+          currentRecord.nextColumn = this.parsePositionalSegments(
+            input,
+            candidate,
+            currentRecord,
+            positionalColumns,
+            0,
+          );
+        } else {
+          this.parseTableSegments(input, candidate, currentRecord, node, knownColumns);
+        }
       } else if (currentRecord === null) {
         this.warn(candidate, 'A vertical table field must follow a "- key: value" record.');
+      } else if (positionalColumns !== null) {
+        currentRecord.nextColumn = this.parsePositionalSegments(
+          content,
+          candidate,
+          currentRecord,
+          positionalColumns,
+          currentRecord.nextColumn,
+        );
       } else {
         this.parseTableSegments(content, candidate, currentRecord, node, knownColumns);
       }
@@ -368,6 +412,30 @@ export class FluxMarkParser {
 
     this.finishRange(node);
     return node;
+  }
+
+  private parsePositionalSegments(
+    input: string,
+    line: FluxSourceLine,
+    record: TableRecord,
+    columns: string[],
+    startIndex: number,
+  ): number {
+    const segments = splitTableRecord(input).map((segment) => segment.trim());
+    for (let offset = 0; offset < segments.length; offset += 1) {
+      const columnIndex = startIndex + offset;
+      if (columnIndex >= columns.length) {
+        this.warn(line, `Ignored extra table value "${segments[offset] ?? ''}".`);
+        break;
+      }
+      const key = columns[columnIndex];
+      if (key === undefined) continue;
+      record.row.cells[key] = {
+        line: line.number,
+        tokens: this.inlineParser.parse(segments[offset] ?? ''),
+      };
+    }
+    return Math.min(columns.length, startIndex + segments.length);
   }
 
   private parseTableSegments(

@@ -376,12 +376,21 @@ function renderBlocks(blocks, dialect, depth = 0) {
           lines.push(`${indent}| ${cells.join(' | ')} |`);
         }
       } else {
+        const rowIndent = `${indent}\t`;
         lines.push(`${indent}@`);
-        for (const row of block.rows) {
-          const fields = headers.map(
-            (header, index) => `${header}: ${inline(row[index] ?? []).trim()}`,
-          );
-          lines.push(`${indent}- ${fields.join(' | ')}`);
+        if (headers.length < 2) {
+          for (const row of block.rows) {
+            const fields = headers.map(
+              (header, index) => `${header}: ${inline(row[index] ?? []).trim()}`,
+            );
+            lines.push(`${rowIndent}- ${fields.join(' | ')}`);
+          }
+        } else {
+          lines.push(`${rowIndent}- ${headers.join(' | ')}`);
+          for (const row of block.rows) {
+            const cells = headers.map((_header, index) => inline(row[index] ?? []).trim());
+            lines.push(`${rowIndent}- ${cells.join(' | ')}`);
+          }
         }
       }
     } else if (block.type === 'quote') {
