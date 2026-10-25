@@ -45,14 +45,16 @@ const presets = getPlaygroundPresets(locale.value);
 const defaultPreset = getDefaultPreset(locale.value);
 const plugin = createPlaygroundPlugin(locale.value);
 const flux = new FluxMark().use(plugin);
-const htmlRenderer = flux.createHtmlRenderer();
+const allowHtml = ref(false);
+const safeHtmlRenderer = flux.createHtmlRenderer();
+const rawHtmlRenderer = flux.createHtmlRenderer({ allowHtml: true });
 
 function compileSource(value: string): CompilationResult {
   const parseStart = performance.now();
   const document = flux.parse(value);
   const parseMs = performance.now() - parseStart;
   const htmlStart = performance.now();
-  const html = htmlRenderer.render(document);
+  const html = (allowHtml.value ? rawHtmlRenderer : safeHtmlRenderer).render(document);
   const htmlMs = performance.now() - htmlStart;
   return { document, html, parseMs, htmlMs };
 }
@@ -139,6 +141,10 @@ function compileNow(): void {
     isCompiling.value = false;
   }
 }
+
+watch(allowHtml, () => {
+  compileNow();
+});
 
 watch(source, () => {
   isCompiling.value = true;
@@ -316,6 +322,10 @@ onBeforeUnmount(() => {
                 {{ t.views.source }}
               </button>
             </div>
+            <label class="pg-raw-toggle" :title="t.views.allowHtmlHint">
+              <input v-model="allowHtml" type="checkbox" />
+              <span>{{ t.views.allowHtml }}</span>
+            </label>
             <button
               type="button"
               class="pg-icon-button"
@@ -415,6 +425,10 @@ onBeforeUnmount(() => {
         <footer class="pg-output-footer">
           <span class="pg-status-dot" aria-hidden="true" />
           <span>{{ activeView === 'html' ? t.views.footerHtml : t.views.footerAst }}</span>
+          <span v-if="allowHtml" class="pg-raw-footer-warning" role="status">
+            <PlaygroundIcon name="alert" :size="12" />
+            {{ t.views.rawHtmlWarning }}
+          </span>
           <span class="pg-bar-spacer" />
           <span>{{ currentPreset.fileName }}</span>
         </footer>

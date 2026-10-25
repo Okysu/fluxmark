@@ -35,6 +35,9 @@ const englishWelcome = `# One source. Clear output.
           Interaction: Task clicks and anchor navigation
       - Surface: AST | Signal: Transformed JSON
           Interaction: Node count and document outline
+  # Raw HTML
+    !html
+      <div class="playground-raw-demo">Raw HTML is opt-in and disabled by default.</div>
 `;
 
 const englishSyntax = `# FluxMark syntax field guide
@@ -91,6 +94,9 @@ const englishRelease = `# Release notes / 0.1.0
       - Output | Signal | Tasks
       - HTML | Semantic markup | Checkbox to source update
       - AST | Formatted JSON | Read-only inspection
+  # Raw HTML
+    !html
+      <div class="playground-raw-demo">Raw HTML is opt-in and disabled by default.</div>
   # Next on the roadmap
     :::timeline Beyond the workbench
       Plugin author toolkit | in progress
@@ -126,6 +132,9 @@ const chineseWelcome = `# 一份源码，清晰输出
           交互: 任务点击与锚点导航
       - 视图: AST | 信号: 转换后的 JSON
           交互: 节点统计与文档大纲
+  # 原始 HTML
+    !html
+      <div class="playground-raw-demo">原始 HTML 需要手动开启，默认安全转义。</div>
 `;
 
 const chineseSyntax = `# FluxMark 语法手册
@@ -182,6 +191,9 @@ const chineseRelease = `# 版本说明 / 0.1.0
       - 输出 | 信号 | 任务
       - HTML | 语义化标记 | 复选框回写源码
       - AST | 格式化 JSON | 只读检查
+  # 原始 HTML
+    !html
+      <div class="playground-raw-demo">原始 HTML 需要手动开启，默认安全转义。</div>
   # 下一步路线
     :::timeline 工作台之外
       插件作者工具链 | 进行中

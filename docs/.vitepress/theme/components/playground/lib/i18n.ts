@@ -53,6 +53,9 @@ export interface PlaygroundMessages {
     untitled: string;
     footerHtml: string;
     footerAst: string;
+    allowHtml: string;
+    allowHtmlHint: string;
+    rawHtmlWarning: string;
   };
   notices: {
     presetLoaded: string;
@@ -147,6 +150,9 @@ const en: PlaygroundMessages = {
     untitled: 'Untitled section',
     footerHtml: 'HTML with safe escaping',
     footerAst: 'Post-transform AST',
+    allowHtml: 'Raw HTML',
+    allowHtmlHint: 'Render !html blocks and !<tag> inline nodes as trusted HTML',
+    rawHtmlWarning: 'Raw HTML enabled — trusted input only',
   },
   notices: {
     presetLoaded: 'Loaded {name}',
@@ -225,6 +231,9 @@ const zh: PlaygroundMessages = {
     untitled: '未命名章节',
     footerHtml: '安全转义的 HTML',
     footerAst: '转换后的 AST',
+    allowHtml: '原始 HTML',
+    allowHtmlHint: '将 !html 块和 !<tag> 行内节点作为可信 HTML 渲染',
+    rawHtmlWarning: '原始 HTML 已开启，仅限可信内容',
   },
   notices: {
     presetLoaded: '已载入 {name}',
