@@ -1,6 +1,6 @@
 {
   "name": "fluxmark",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Zero-backtracking FluxMark compiler with a typed AST, staged plugins and a semantic HTML renderer.",
   "keywords": ["fluxmark", "markup", "parser", "ast", "html", "compiler"],
   "license": "MIT",
