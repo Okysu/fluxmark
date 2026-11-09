@@ -73,3 +73,22 @@ jobs:
         run: pnpm --filter fluxmark publish --access public --provenance --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # pnpm exits 0 when the version is already on the registry ("There are no new
+      # packages that should be published"), which would mark a release green even
+      # though nothing was published. Fail loudly unless the tag version is live.
+      - name: Verify the tag version is on the registry
+        shell: bash
+        run: |
+          VERSION="$(node -p "require('./packages/fluxmark/package.json').version")"
+          for attempt in 1 2 3 4 5; do
+            PUBLISHED="$(npm view "fluxmark@${VERSION}" version 2>/dev/null || true)"
+            if [ "${PUBLISHED}" = "${VERSION}" ]; then
+              echo "fluxmark@${VERSION} is available on npm"
+              exit 0
+            fi
+            echo "Attempt ${attempt}: registry reports '${PUBLISHED}', retrying in 10s"
+            sleep 10
+          done
+          echo "::error::fluxmark@${VERSION} was not published"
+          exit 1
